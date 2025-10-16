@@ -1,0 +1,809 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Training dataset for Natural Language to SQL conversion",
+    "total_examples": 150,
+    "created_date": "2024-01-15",
+    "database_schema": "ai_agent_db"
+  },
+  "examples": [
+    {
+      "natural_language": "Show all users",
+      "sql_query": "SELECT * FROM users",
+      "category": "basic_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get all products",
+      "sql_query": "SELECT * FROM products",
+      "category": "basic_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List all customers",
+      "sql_query": "SELECT * FROM customers",
+      "category": "basic_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Display all orders",
+      "sql_query": "SELECT * FROM orders",
+      "category": "basic_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show all categories",
+      "sql_query": "SELECT * FROM categories",
+      "category": "basic_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Find users with name John",
+      "sql_query": "SELECT * FROM users WHERE name = 'John'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get products with price greater than 100",
+      "sql_query": "SELECT * FROM products WHERE price > 100",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show products cheaper than 50",
+      "sql_query": "SELECT * FROM products WHERE price < 50",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List active users",
+      "sql_query": "SELECT * FROM users WHERE is_active = true",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Find available products",
+      "sql_query": "SELECT * FROM products WHERE is_available = true",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get user emails",
+      "sql_query": "SELECT email FROM users",
+      "category": "column_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show product names and prices",
+      "sql_query": "SELECT name, price FROM products",
+      "category": "column_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List customer names",
+      "sql_query": "SELECT first_name, last_name FROM customers",
+      "category": "column_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Display order dates and amounts",
+      "sql_query": "SELECT order_date, total_amount FROM orders",
+      "category": "column_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get product names",
+      "sql_query": "SELECT name FROM products",
+      "category": "column_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show products in electronics category",
+      "sql_query": "SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Electronics')",
+      "category": "subquery",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Find products in category 1",
+      "sql_query": "SELECT * FROM products WHERE category_id = 1",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List orders from customer 5",
+      "sql_query": "SELECT * FROM orders WHERE customer_id = 5",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show pending orders",
+      "sql_query": "SELECT * FROM orders WHERE status = 'pending'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get delivered orders",
+      "sql_query": "SELECT * FROM orders WHERE status = 'delivered'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Count all users",
+      "sql_query": "SELECT COUNT(*) FROM users",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "How many products do we have",
+      "sql_query": "SELECT COUNT(*) FROM products",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Total number of orders",
+      "sql_query": "SELECT COUNT(*) FROM orders",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Count active users",
+      "sql_query": "SELECT COUNT(*) FROM users WHERE is_active = true",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "How many available products",
+      "sql_query": "SELECT COUNT(*) FROM products WHERE is_available = true",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Sum of all order amounts",
+      "sql_query": "SELECT SUM(total_amount) FROM orders",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Total revenue from orders",
+      "sql_query": "SELECT SUM(total_amount) FROM orders",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Average product price",
+      "sql_query": "SELECT AVG(price) FROM products",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Maximum product price",
+      "sql_query": "SELECT MAX(price) FROM products",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Minimum product price",
+      "sql_query": "SELECT MIN(price) FROM products",
+      "category": "aggregate",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show products ordered by price ascending",
+      "sql_query": "SELECT * FROM products ORDER BY price ASC",
+      "category": "sorting",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List products from most expensive to cheapest",
+      "sql_query": "SELECT * FROM products ORDER BY price DESC",
+      "category": "sorting",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Sort users by name",
+      "sql_query": "SELECT * FROM users ORDER BY name",
+      "category": "sorting",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show orders sorted by date",
+      "sql_query": "SELECT * FROM orders ORDER BY order_date",
+      "category": "sorting",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List customers alphabetically",
+      "sql_query": "SELECT * FROM customers ORDER BY last_name, first_name",
+      "category": "sorting",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show first 10 products",
+      "sql_query": "SELECT * FROM products LIMIT 10",
+      "category": "limit",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get top 5 most expensive products",
+      "sql_query": "SELECT * FROM products ORDER BY price DESC LIMIT 5",
+      "category": "limit_sort",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List 3 newest orders",
+      "sql_query": "SELECT * FROM orders ORDER BY order_date DESC LIMIT 3",
+      "category": "limit_sort",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show 5 cheapest products",
+      "sql_query": "SELECT * FROM products ORDER BY price ASC LIMIT 5",
+      "category": "limit_sort",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Display first 20 users",
+      "sql_query": "SELECT * FROM users LIMIT 20",
+      "category": "limit",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Find products between 50 and 200 dollars",
+      "sql_query": "SELECT * FROM products WHERE price BETWEEN 50 AND 200",
+      "category": "range",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show products priced from 100 to 500",
+      "sql_query": "SELECT * FROM products WHERE price >= 100 AND price <= 500",
+      "category": "range",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List orders from January 2024",
+      "sql_query": "SELECT * FROM orders WHERE order_date >= '2024-01-01' AND order_date < '2024-02-01'",
+      "category": "date_range",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get orders after January 15 2024",
+      "sql_query": "SELECT * FROM orders WHERE order_date > '2024-01-15'",
+      "category": "date_filter",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show users created in 2024",
+      "sql_query": "SELECT * FROM users WHERE created_at >= '2024-01-01'",
+      "category": "date_filter",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Find products with name containing phone",
+      "sql_query": "SELECT * FROM products WHERE name ILIKE '%phone%'",
+      "category": "pattern_match",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Search for users with email ending in gmail",
+      "sql_query": "SELECT * FROM users WHERE email LIKE '%gmail%'",
+      "category": "pattern_match",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get products starting with Mac",
+      "sql_query": "SELECT * FROM products WHERE name LIKE 'Mac%'",
+      "category": "pattern_match",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Find customers in New York",
+      "sql_query": "SELECT * FROM customers WHERE city = 'New York'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List customers from USA",
+      "sql_query": "SELECT * FROM customers WHERE country = 'USA'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show orders with customer names",
+      "sql_query": "SELECT o.*, c.first_name, c.last_name FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "category": "join",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get products with category names",
+      "sql_query": "SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id",
+      "category": "join",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List orders with customer details",
+      "sql_query": "SELECT o.id, o.order_date, o.total_amount, c.first_name, c.last_name, c.email FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "category": "join",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show order items with product names",
+      "sql_query": "SELECT oi.*, p.name as product_name FROM order_items oi JOIN products p ON oi.product_id = p.id",
+      "category": "join",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get all order details with customer and product info",
+      "sql_query": "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "category": "multi_join",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Count orders by status",
+      "sql_query": "SELECT status, COUNT(*) as count FROM orders GROUP BY status",
+      "category": "group_by",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show number of products per category",
+      "sql_query": "SELECT category_id, COUNT(*) as product_count FROM products GROUP BY category_id",
+      "category": "group_by",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Total sales by customer",
+      "sql_query": "SELECT customer_id, SUM(total_amount) as total_sales FROM orders GROUP BY customer_id",
+      "category": "group_by",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Average order amount by customer",
+      "sql_query": "SELECT customer_id, AVG(total_amount) as avg_order FROM orders GROUP BY customer_id",
+      "category": "group_by",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Count customers by city",
+      "sql_query": "SELECT city, COUNT(*) as customer_count FROM customers GROUP BY city",
+      "category": "group_by",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show customers who spent more than 1000",
+      "sql_query": "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "category": "having",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Categories with more than 5 products",
+      "sql_query": "SELECT category_id, COUNT(*) as count FROM products GROUP BY category_id HAVING COUNT(*) > 5",
+      "category": "having",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Customers with more than 3 orders",
+      "sql_query": "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 3",
+      "category": "having",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Find duplicate emails in users",
+      "sql_query": "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1",
+      "category": "having",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show products with low stock",
+      "sql_query": "SELECT * FROM products WHERE stock_quantity < 10",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get out of stock products",
+      "sql_query": "SELECT * FROM products WHERE stock_quantity = 0",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List products with stock above 50",
+      "sql_query": "SELECT * FROM products WHERE stock_quantity > 50",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Find inactive users",
+      "sql_query": "SELECT * FROM users WHERE is_active = false",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show unavailable products",
+      "sql_query": "SELECT * FROM products WHERE is_available = false",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get orders paid by credit card",
+      "sql_query": "SELECT * FROM orders WHERE payment_method = 'credit_card'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List orders paid with PayPal",
+      "sql_query": "SELECT * FROM orders WHERE payment_method = 'paypal'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show processing orders",
+      "sql_query": "SELECT * FROM orders WHERE status = 'processing'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Find shipped orders",
+      "sql_query": "SELECT * FROM orders WHERE status = 'shipped'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get cancelled orders",
+      "sql_query": "SELECT * FROM orders WHERE status = 'cancelled'",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show total revenue by month",
+      "sql_query": "SELECT DATE_TRUNC('month', order_date) as month, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "category": "date_aggregate",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Count orders per day",
+      "sql_query": "SELECT DATE(order_date) as day, COUNT(*) as order_count FROM orders GROUP BY DATE(order_date)",
+      "category": "date_aggregate",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Average order value by month",
+      "sql_query": "SELECT DATE_TRUNC('month', order_date) as month, AVG(total_amount) as avg_value FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "category": "date_aggregate",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show customer full names and emails",
+      "sql_query": "SELECT first_name || ' ' || last_name as full_name, email FROM customers",
+      "category": "concat",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List user names and phone numbers",
+      "sql_query": "SELECT name, phone FROM users",
+      "category": "column_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get product names with their categories",
+      "sql_query": "SELECT p.name, c.name as category FROM products p JOIN categories c ON p.category_id = c.id",
+      "category": "join",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show top 10 customers by total spending",
+      "sql_query": "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10",
+      "category": "complex",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Find best selling products",
+      "sql_query": "SELECT p.name, SUM(oi.quantity) as total_sold FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_sold DESC",
+      "category": "complex",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show products never ordered",
+      "sql_query": "SELECT * FROM products WHERE id NOT IN (SELECT DISTINCT product_id FROM order_items)",
+      "category": "subquery",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Get customers who never ordered",
+      "sql_query": "SELECT * FROM customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM orders)",
+      "category": "subquery",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "List products more expensive than average",
+      "sql_query": "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)",
+      "category": "subquery",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show orders larger than average order value",
+      "sql_query": "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "category": "subquery",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Find customers with above average order count",
+      "sql_query": "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > (SELECT AVG(order_count) FROM (SELECT COUNT(*) as order_count FROM orders GROUP BY customer_id) as subq)",
+      "category": "complex_subquery",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show recent orders from last 7 days",
+      "sql_query": "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "category": "date_filter",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get orders from last month",
+      "sql_query": "SELECT * FROM orders WHERE order_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') AND order_date < DATE_TRUNC('month', CURRENT_DATE)",
+      "category": "date_filter",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "List products added this year",
+      "sql_query": "SELECT * FROM products WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)",
+      "category": "date_filter",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show today's orders",
+      "sql_query": "SELECT * FROM orders WHERE DATE(order_date) = CURRENT_DATE",
+      "category": "date_filter",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get users registered this week",
+      "sql_query": "SELECT * FROM users WHERE created_at >= DATE_TRUNC('week', CURRENT_DATE)",
+      "category": "date_filter",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Calculate total inventory value",
+      "sql_query": "SELECT SUM(price * stock_quantity) as inventory_value FROM products",
+      "category": "calculation",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show products with profit margin",
+      "sql_query": "SELECT name, price, price * 0.3 as profit FROM products",
+      "category": "calculation",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get order totals with tax",
+      "sql_query": "SELECT id, total_amount, total_amount * 1.1 as with_tax FROM orders",
+      "category": "calculation",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List products with discount price",
+      "sql_query": "SELECT name, price, price * 0.8 as discounted_price FROM products",
+      "category": "calculation",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show order count per customer with names",
+      "sql_query": "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "category": "left_join",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Get all categories with product count",
+      "sql_query": "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "category": "left_join",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show products in stock sorted by quantity",
+      "sql_query": "SELECT * FROM products WHERE stock_quantity > 0 ORDER BY stock_quantity DESC",
+      "category": "filter_sort",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List active users sorted by creation date",
+      "sql_query": "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC",
+      "category": "filter_sort",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get available products sorted by price",
+      "sql_query": "SELECT * FROM products WHERE is_available = true ORDER BY price ASC",
+      "category": "filter_sort",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show completed orders sorted by date",
+      "sql_query": "SELECT * FROM orders WHERE status = 'delivered' ORDER BY order_date DESC",
+      "category": "filter_sort",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Find products with null category",
+      "sql_query": "SELECT * FROM products WHERE category_id IS NULL",
+      "category": "null_check",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get users without phone numbers",
+      "sql_query": "SELECT * FROM users WHERE phone IS NULL",
+      "category": "null_check",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show customers without addresses",
+      "sql_query": "SELECT * FROM customers WHERE address IS NULL",
+      "category": "null_check",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List products with descriptions",
+      "sql_query": "SELECT * FROM products WHERE description IS NOT NULL",
+      "category": "null_check",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get distinct cities from customers",
+      "sql_query": "SELECT DISTINCT city FROM customers",
+      "category": "distinct",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show unique product categories",
+      "sql_query": "SELECT DISTINCT category_id FROM products",
+      "category": "distinct",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "List all payment methods used",
+      "sql_query": "SELECT DISTINCT payment_method FROM orders",
+      "category": "distinct",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get unique order statuses",
+      "sql_query": "SELECT DISTINCT status FROM orders",
+      "category": "distinct",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Show countries with customers",
+      "sql_query": "SELECT DISTINCT country FROM customers",
+      "category": "distinct",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Find products in multiple categories",
+      "sql_query": "SELECT * FROM products WHERE category_id IN (1, 2, 3)",
+      "category": "in_clause",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get orders with specific statuses",
+      "sql_query": "SELECT * FROM orders WHERE status IN ('pending', 'processing', 'shipped')",
+      "category": "in_clause",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "List customers from certain cities",
+      "sql_query": "SELECT * FROM customers WHERE city IN ('New York', 'Los Angeles', 'Chicago')",
+      "category": "in_clause",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show products not in category 1",
+      "sql_query": "SELECT * FROM products WHERE category_id NOT IN (1)",
+      "category": "in_clause",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Get monthly sales report",
+      "sql_query": "SELECT DATE_TRUNC('month', order_date) as month, COUNT(*) as orders, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date) ORDER BY month DESC",
+      "category": "report",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show product performance report",
+      "sql_query": "SELECT p.name, COUNT(oi.id) as times_ordered, SUM(oi.quantity) as total_quantity, SUM(oi.subtotal) as total_revenue FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_revenue DESC",
+      "category": "report",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Generate customer activity report",
+      "sql_query": "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as order_count, SUM(o.total_amount) as total_spent, MAX(o.order_date) as last_order FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "category": "report",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show inventory status report",
+      "sql_query": "SELECT c.name as category, COUNT(p.id) as product_count, SUM(p.stock_quantity) as total_stock, AVG(p.price) as avg_price FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "category": "report",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Get revenue by payment method",
+      "sql_query": "SELECT payment_method, COUNT(*) as order_count, SUM(total_amount) as total_revenue FROM orders GROUP BY payment_method",
+      "category": "group_by",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show order status distribution",
+      "sql_query": "SELECT status, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage FROM orders GROUP BY status",
+      "category": "window_function",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "List top 5 revenue generating products",
+      "sql_query": "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5",
+      "category": "top_n",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show bottom 5 selling products",
+      "sql_query": "SELECT p.name, COALESCE(SUM(oi.quantity), 0) as sold FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY sold ASC LIMIT 5",
+      "category": "top_n",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Find customers who ordered in last 30 days",
+      "sql_query": "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'",
+      "category": "date_join",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Get products added in last quarter",
+      "sql_query": "SELECT * FROM products WHERE created_at >= DATE_TRUNC('quarter', CURRENT_DATE)",
+      "category": "date_filter",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show average order value by customer",
+      "sql_query": "SELECT c.first_name, c.last_name, AVG(o.total_amount) as avg_order_value FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "category": "aggregate_join",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "List products with low stock alert",
+      "sql_query": "SELECT name, stock_quantity FROM products WHERE stock_quantity < 20 AND is_available = true ORDER BY stock_quantity ASC",
+      "category": "alert",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Show orders pending for more than 3 days",
+      "sql_query": "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'",
+      "category": "alert",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Find high value orders above 1000",
+      "sql_query": "SELECT * FROM orders WHERE total_amount > 1000 ORDER BY total_amount DESC",
+      "category": "filtered_select",
+      "difficulty": "easy"
+    },
+    {
+      "natural_language": "Get customer lifetime value",
+      "sql_query": "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as total_orders, SUM(o.total_amount) as lifetime_value FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY lifetime_value DESC",
+      "category": "analytics",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show product category distribution",
+      "sql_query": "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name ORDER BY product_count DESC",
+      "category": "distribution",
+      "difficulty": "medium"
+    },
+    {
+      "natural_language": "Calculate average items per order",
+      "sql_query": "SELECT AVG(item_count) as avg_items FROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id) as subq",
+      "category": "nested_aggregate",
+      "difficulty": "hard"
+    },
+    {
+      "natural_language": "Show conversion rate by customer",
+      "sql_query": "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as orders, COUNT(o.id)::float / NULLIF(COUNT(DISTINCT o.customer_id), 0) as conversion FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "category": "analytics",
+      "difficulty": "hard"
+    }
+  ]
+}

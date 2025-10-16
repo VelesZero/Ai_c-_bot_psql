@@ -1,0 +1,63 @@
+{
+  "model": {
+    "name": "nl_to_sql_model",
+    "version": "1.0.0",
+    "type": "neural_network",
+    "architecture": "transformer_encoder",
+    "parameters": {
+      "vocab_size": 10000,
+      "max_length": 128,
+      "hidden_size": 256,
+      "num_layers": 6,
+      "num_heads": 8,
+      "dropout": 0.1,
+      "learning_rate": 0.001
+    }
+  },
+  "training": {
+    "epochs": 100,
+    "batch_size": 32,
+    "validation_split": 0.2,
+    "early_stopping_patience": 10,
+    "training_samples": 1000,
+    "validation_samples": 250,
+    "test_samples": 125,
+    "accuracy": 0.85,
+    "loss": 0.23
+  },
+  "vocabulary": {
+    "size": 10000,
+    "special_tokens": {
+      "pad": 0,
+      "unk": 1,
+      "bos": 2,
+      "eos": 3
+    },
+    "word_to_index": {
+      "select": 100,
+      "from": 101,
+      "where": 102,
+      "insert": 103,
+      "update": 104,
+      "delete": 105,
+      "users": 200,
+      "id": 201,
+      "name": 202,
+      "email": 203,
+      "age": 204,
+      "count": 205,
+      "limit": 206,
+      "order": 207,
+      "by": 208,
+      "and": 209,
+      "or": 210
+    }
+  },
+  "metadata": {
+    "created": "2025-10-16T00:00:00Z",
+    "author": "AI BD Copilot",
+    "description": "Pre-trained model for converting natural language queries to SQL",
+    "framework": "TensorFlow/PyTorch",
+    "license": "MIT"
+  }
+}
