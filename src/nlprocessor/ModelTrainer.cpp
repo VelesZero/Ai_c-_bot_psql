@@ -150,17 +150,39 @@ bool ModelTrainer::loadModel(const std::string& filename) {
     }
 }
 
-std::map<std::string, double> ModelTrainer::getPatternScores(const std::string& input) const {
-    std::map<std::string, double> scores;
-    
-    auto keywords = extractKeywords(input);
-    
-    for (const auto& keyword : keywords) {
-        auto it = keywordFrequency_.find(keyword);
-        if (it != keywordFrequency_.end()) {
-            scores[keyword] = static_cast<double>(it->second);
+std::string ModelTrainer::findSimilarQuery(const std::string& input) const {
+    if (trainingData_.empty()) {
+        return "";
+    }
+
+    auto inputKeywords = extractKeywords(input);
+    std::string bestMatch = "";
+    int maxScore = 0;
+
+    for (const auto& example : trainingData_) {
+        int score = 0;
+        auto exampleKeywords = extractKeywords(example.naturalLanguage);
+
+        // Подсчет совпадающих ключевых слов
+        for (const auto& inputKeyword : inputKeywords) {
+            for (const auto& exampleKeyword : exampleKeywords) {
+                if (Utils::toLower(inputKeyword) == Utils::toLower(exampleKeyword)) {
+                    score++;
+                }
+            }
+        }
+
+        // Если нашли точное совпадение по ключевым словам, возвращаем сразу
+        if (score == static_cast<int>(inputKeywords.size()) && score > 0) {
+            return example.sqlQuery;
+        }
+
+        // Иначе сохраняем лучший результат
+        if (score > maxScore) {
+            maxScore = score;
+            bestMatch = example.sqlQuery;
         }
     }
-    
-    return scores;
+
+    return bestMatch;
 }

@@ -24,7 +24,7 @@ public:
     bool saveModel(const std::string& filename);
     bool loadModel(const std::string& filename);
     
-    std::map<std::string, double> getPatternScores(const std::string& input) const;
+    std::string findSimilarQuery(const std::string& input) const;
     
 private:
     std::vector<TrainingExample> trainingData_;

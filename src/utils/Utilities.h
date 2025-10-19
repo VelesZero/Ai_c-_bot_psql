@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
-#include <sstream>  // <-- Добавьте эту строку!
+#include <sstream>
 
 namespace Utils {
     // Обрезка пробелов

@@ -10,6 +10,7 @@
 class NLProcessor {
 public:
     NLProcessor();
+    virtual ~NLProcessor();
     
     bool initialize(const std::string& modelPath);
     bool trainModel(const std::string& trainingDataPath, const std::string& modelPath);
