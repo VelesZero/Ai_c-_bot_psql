@@ -1,0 +1,63 @@
+{
+  "examples": [
+    {"nl": "Show all users", "sql": "SELECT * FROM users"},
+    {"nl": "Get all products", "sql": "SELECT * FROM products"},
+    {"nl": "List all customers", "sql": "SELECT * FROM customers"},
+    {"nl": "Display all orders", "sql": "SELECT * FROM orders"},
+    {"nl": "Show all categories", "sql": "SELECT * FROM categories"},
+    
+    {"nl": "Show 5 cheapest products", "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 5"},
+    {"nl": "Get 10 most expensive products", "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 10"},
+    {"nl": "Show top 3 products", "sql": "SELECT * FROM products LIMIT 3"},
+    {"nl": "List 20 newest users", "sql": "SELECT * FROM users ORDER BY created_at DESC LIMIT 20"},
+    {"nl": "Get first 15 orders", "sql": "SELECT * FROM orders LIMIT 15"},
+    
+    {"nl": "Count all users", "sql": "SELECT COUNT(*) FROM users"},
+    {"nl": "How many products", "sql": "SELECT COUNT(*) FROM products"},
+    {"nl": "Total number of orders", "sql": "SELECT COUNT(*) FROM orders"},
+    {"nl": "Count customers", "sql": "SELECT COUNT(*) FROM customers"},
+    
+    {"nl": "Products cheaper than 100", "sql": "SELECT * FROM products WHERE price < 100"},
+    {"nl": "Products less than 50", "sql": "SELECT * FROM products WHERE price < 50"},
+    {"nl": "Products under 200", "sql": "SELECT * FROM products WHERE price < 200"},
+    {"nl": "Products more expensive than 100", "sql": "SELECT * FROM products WHERE price > 100"},
+    {"nl": "Products above 500", "sql": "SELECT * FROM products WHERE price > 500"},
+    
+    {"nl": "Products between 50 and 200", "sql": "SELECT * FROM products WHERE price BETWEEN 50 AND 200"},
+    {"nl": "Products between 100 and 500", "sql": "SELECT * FROM products WHERE price BETWEEN 100 AND 500"},
+    
+    {"nl": "Users named John", "sql": "SELECT * FROM users WHERE name = 'John'"},
+    {"nl": "Find user Alice", "sql": "SELECT * FROM users WHERE name = 'Alice'"},
+    {"nl": "Products in category Electronics", "sql": "SELECT * FROM products WHERE category = 'Electronics'"},
+    
+    {"nl": "Show user names and emails", "sql": "SELECT name, email FROM users"},
+    {"nl": "Get product names and prices", "sql": "SELECT name, price FROM products"},
+    {"nl": "List order totals", "sql": "SELECT total FROM orders"},
+    
+    {"nl": "Users from New York", "sql": "SELECT * FROM users WHERE city = 'New York'"},
+    {"nl": "Users older than 25", "sql": "SELECT * FROM users WHERE age > 25"},
+    {"nl": "Users younger than 30", "sql": "SELECT * FROM users WHERE age < 30"},
+    
+    {"nl": "Products sorted by name", "sql": "SELECT * FROM products ORDER BY name ASC"},
+    {"nl": "Users sorted by age descending", "sql": "SELECT * FROM users ORDER BY age DESC"},
+    {"nl": "Orders sorted by date", "sql": "SELECT * FROM orders ORDER BY created_at DESC"},
+    
+    {"nl": "Average product price", "sql": "SELECT AVG(price) FROM products"},
+    {"nl": "Maximum product price", "sql": "SELECT MAX(price) FROM products"},
+    {"nl": "Minimum product price", "sql": "SELECT MIN(price) FROM products"},
+    {"nl": "Sum of order totals", "sql": "SELECT SUM(total) FROM orders"},
+    
+    {"nl": "Users grouped by city", "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"},
+    {"nl": "Products grouped by category", "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"},
+    
+    {"nl": "Users with gmail", "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com'"},
+    {"nl": "Products containing phone", "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"},
+    
+    {"nl": "Join users and orders", "sql": "SELECT * FROM users JOIN orders ON users.id = orders.user_id"},
+    {"nl": "Users with their orders", "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"},
+    
+    {"nl": "Delete old orders", "sql": "DELETE FROM orders WHERE created_at < '2020-01-01'"},
+    {"nl": "Update product price", "sql": "UPDATE products SET price = 100 WHERE id = 1"},
+    {"nl": "Insert new user", "sql": "INSERT INTO users (name, email) VALUES ('John', 'john@example.com')"}
+  ]
+}

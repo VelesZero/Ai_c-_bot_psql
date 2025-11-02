@@ -1,0 +1,32 @@
+# C++
+*.o
+*.so
+*.a
+*.out
+*.exe
+build/
+bin/
+*.d
+*.dll
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Дополнительно
+.DS_Store
+*.log
+*.tmp
+libtorch/
+libtorch/
+libtorch_bak_cu118/
+.cashe
+.cache/

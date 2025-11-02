@@ -1,0 +1,1220 @@
+{
+  "frequencies": {
+    "1": 2,
+    "10": 2,
+    "100": 2,
+    "1000": 2,
+    "15": 1,
+    "20": 1,
+    "200": 1,
+    "2024": 3,
+    "3": 3,
+    "30": 1,
+    "5": 6,
+    "50": 3,
+    "500": 1,
+    "7": 1,
+    "active": 3,
+    "activity": 1,
+    "added": 2,
+    "addresses": 1,
+    "alert": 1,
+    "all": 10,
+    "alphabetically": 1,
+    "amount": 1,
+    "amounts": 2,
+    "and": 6,
+    "ascending": 1,
+    "available": 3,
+    "average": 8,
+    "best": 1,
+    "bottom": 1,
+    "calculate": 2,
+    "cancelled": 1,
+    "card": 1,
+    "categories": 6,
+    "category": 7,
+    "certain": 1,
+    "cheaper": 1,
+    "cheapest": 2,
+    "cities": 2,
+    "city": 1,
+    "completed": 1,
+    "containing": 1,
+    "conversion": 1,
+    "count": 8,
+    "countries": 1,
+    "created": 1,
+    "creation": 1,
+    "credit": 1,
+    "customer": 13,
+    "customers": 15,
+    "date": 3,
+    "dates": 1,
+    "day": 1,
+    "days": 3,
+    "delivered": 1,
+    "descriptions": 1,
+    "details": 2,
+    "discount": 1,
+    "display": 3,
+    "distinct": 1,
+    "distribution": 2,
+    "dollars": 1,
+    "duplicate": 1,
+    "electronics": 1,
+    "email": 1,
+    "emails": 3,
+    "ending": 1,
+    "expensive": 3,
+    "find": 15,
+    "first": 2,
+    "full": 1,
+    "generate": 1,
+    "generating": 1,
+    "get": 28,
+    "gmail": 1,
+    "greater": 1,
+    "high": 1,
+    "how": 2,
+    "inactive": 1,
+    "info": 1,
+    "inventory": 2,
+    "items": 2,
+    "january": 2,
+    "john": 1,
+    "larger": 1,
+    "last": 4,
+    "lifetime": 1,
+    "list": 22,
+    "low": 2,
+    "mac": 1,
+    "many": 2,
+    "margin": 1,
+    "maximum": 1,
+    "method": 1,
+    "methods": 1,
+    "minimum": 1,
+    "month": 3,
+    "monthly": 1,
+    "more": 5,
+    "most": 2,
+    "multiple": 1,
+    "name": 3,
+    "names": 10,
+    "never": 2,
+    "new": 1,
+    "newest": 1,
+    "not": 1,
+    "null": 1,
+    "number": 2,
+    "numbers": 2,
+    "order": 14,
+    "ordered": 4,
+    "orders": 28,
+    "paid": 2,
+    "payment": 2,
+    "paypal": 1,
+    "pending": 2,
+    "per": 4,
+    "performance": 1,
+    "phone": 3,
+    "price": 7,
+    "priced": 1,
+    "prices": 1,
+    "processing": 1,
+    "product": 12,
+    "products": 40,
+    "profit": 1,
+    "quantity": 1,
+    "quarter": 1,
+    "rate": 1,
+    "recent": 1,
+    "registered": 1,
+    "report": 4,
+    "revenue": 4,
+    "s": 1,
+    "sales": 2,
+    "search": 1,
+    "selling": 2,
+    "shipped": 1,
+    "show": 42,
+    "sort": 1,
+    "sorted": 5,
+    "specific": 1,
+    "spending": 1,
+    "spent": 1,
+    "starting": 1,
+    "status": 3,
+    "statuses": 2,
+    "stock": 5,
+    "sum": 1,
+    "tax": 1,
+    "than": 8,
+    "their": 1,
+    "this": 2,
+    "today": 1,
+    "top": 3,
+    "total": 6,
+    "totals": 1,
+    "unavailable": 1,
+    "unique": 2,
+    "usa": 1,
+    "used": 1,
+    "user": 2,
+    "users": 14,
+    "value": 6,
+    "we": 1,
+    "week": 1,
+    "who": 3,
+    "without": 2,
+    "year": 1,
+    "york": 1
+  },
+  "patterns": {
+    "1": [
+      "SELECT * FROM products WHERE category_id = 1",
+      "SELECT * FROM products WHERE category_id NOT IN (1)"
+    ],
+    "10": [
+      "SELECT * FROM products LIMIT 10",
+      "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10"
+    ],
+    "100": [
+      "SELECT * FROM products WHERE price > 100",
+      "SELECT * FROM products WHERE price >= 100 AND price <= 500"
+    ],
+    "1000": [
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "SELECT * FROM orders WHERE total_amount > 1000 ORDER BY total_amount DESC"
+    ],
+    "15": [
+      "SELECT * FROM orders WHERE order_date > '2024-01-15'"
+    ],
+    "20": [
+      "SELECT * FROM users LIMIT 20"
+    ],
+    "200": [
+      "SELECT * FROM products WHERE price BETWEEN 50 AND 200"
+    ],
+    "2024": [
+      "SELECT * FROM orders WHERE order_date >= '2024-01-01' AND order_date < '2024-02-01'",
+      "SELECT * FROM orders WHERE order_date > '2024-01-15'",
+      "SELECT * FROM users WHERE created_at >= '2024-01-01'"
+    ],
+    "3": [
+      "SELECT * FROM orders ORDER BY order_date DESC LIMIT 3",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 3",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'"
+    ],
+    "30": [
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'"
+    ],
+    "5": [
+      "SELECT * FROM orders WHERE customer_id = 5",
+      "SELECT * FROM products ORDER BY price DESC LIMIT 5",
+      "SELECT * FROM products ORDER BY price ASC LIMIT 5",
+      "SELECT category_id, COUNT(*) as count FROM products GROUP BY category_id HAVING COUNT(*) > 5",
+      "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5",
+      "SELECT p.name, COALESCE(SUM(oi.quantity), 0) as sold FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY sold ASC LIMIT 5"
+    ],
+    "50": [
+      "SELECT * FROM products WHERE price < 50",
+      "SELECT * FROM products WHERE price BETWEEN 50 AND 200",
+      "SELECT * FROM products WHERE stock_quantity > 50"
+    ],
+    "500": [
+      "SELECT * FROM products WHERE price >= 100 AND price <= 500"
+    ],
+    "7": [
+      "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'"
+    ],
+    "SELECT": [
+      "SELECT * FROM users",
+      "SELECT * FROM products",
+      "SELECT * FROM customers",
+      "SELECT * FROM orders",
+      "SELECT * FROM categories",
+      "SELECT * FROM users WHERE name = 'John'",
+      "SELECT * FROM products WHERE price > 100",
+      "SELECT * FROM products WHERE price < 50",
+      "SELECT * FROM users WHERE is_active = true",
+      "SELECT * FROM products WHERE is_available = true",
+      "SELECT email FROM users",
+      "SELECT name, price FROM products",
+      "SELECT first_name, last_name FROM customers",
+      "SELECT order_date, total_amount FROM orders",
+      "SELECT name FROM products",
+      "SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Electronics')",
+      "SELECT * FROM products WHERE category_id = 1",
+      "SELECT * FROM orders WHERE customer_id = 5",
+      "SELECT * FROM orders WHERE status = 'pending'",
+      "SELECT * FROM orders WHERE status = 'delivered'",
+      "SELECT COUNT(*) FROM users",
+      "SELECT COUNT(*) FROM products",
+      "SELECT COUNT(*) FROM orders",
+      "SELECT COUNT(*) FROM users WHERE is_active = true",
+      "SELECT COUNT(*) FROM products WHERE is_available = true",
+      "SELECT SUM(total_amount) FROM orders",
+      "SELECT SUM(total_amount) FROM orders",
+      "SELECT AVG(price) FROM products",
+      "SELECT MAX(price) FROM products",
+      "SELECT MIN(price) FROM products",
+      "SELECT * FROM products ORDER BY price ASC",
+      "SELECT * FROM products ORDER BY price DESC",
+      "SELECT * FROM users ORDER BY name",
+      "SELECT * FROM orders ORDER BY order_date",
+      "SELECT * FROM customers ORDER BY last_name, first_name",
+      "SELECT * FROM products LIMIT 10",
+      "SELECT * FROM products ORDER BY price DESC LIMIT 5",
+      "SELECT * FROM orders ORDER BY order_date DESC LIMIT 3",
+      "SELECT * FROM products ORDER BY price ASC LIMIT 5",
+      "SELECT * FROM users LIMIT 20",
+      "SELECT * FROM products WHERE price BETWEEN 50 AND 200",
+      "SELECT * FROM products WHERE price >= 100 AND price <= 500",
+      "SELECT * FROM orders WHERE order_date >= '2024-01-01' AND order_date < '2024-02-01'",
+      "SELECT * FROM orders WHERE order_date > '2024-01-15'",
+      "SELECT * FROM users WHERE created_at >= '2024-01-01'",
+      "SELECT * FROM products WHERE name ILIKE '%phone%'",
+      "SELECT * FROM users WHERE email LIKE '%gmail%'",
+      "SELECT * FROM products WHERE name LIKE 'Mac%'",
+      "SELECT * FROM customers WHERE city = 'New York'",
+      "SELECT * FROM customers WHERE country = 'USA'",
+      "SELECT o.*, c.first_name, c.last_name FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT o.id, o.order_date, o.total_amount, c.first_name, c.last_name, c.email FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT oi.*, p.name as product_name FROM order_items oi JOIN products p ON oi.product_id = p.id",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "SELECT status, COUNT(*) as count FROM orders GROUP BY status",
+      "SELECT category_id, COUNT(*) as product_count FROM products GROUP BY category_id",
+      "SELECT customer_id, SUM(total_amount) as total_sales FROM orders GROUP BY customer_id",
+      "SELECT customer_id, AVG(total_amount) as avg_order FROM orders GROUP BY customer_id",
+      "SELECT city, COUNT(*) as customer_count FROM customers GROUP BY city",
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "SELECT category_id, COUNT(*) as count FROM products GROUP BY category_id HAVING COUNT(*) > 5",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 3",
+      "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1",
+      "SELECT * FROM products WHERE stock_quantity < 10",
+      "SELECT * FROM products WHERE stock_quantity = 0",
+      "SELECT * FROM products WHERE stock_quantity > 50",
+      "SELECT * FROM users WHERE is_active = false",
+      "SELECT * FROM products WHERE is_available = false",
+      "SELECT * FROM orders WHERE payment_method = 'credit_card'",
+      "SELECT * FROM orders WHERE payment_method = 'paypal'",
+      "SELECT * FROM orders WHERE status = 'processing'",
+      "SELECT * FROM orders WHERE status = 'shipped'",
+      "SELECT * FROM orders WHERE status = 'cancelled'",
+      "SELECT DATE_TRUNC('month', order_date) as month, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT DATE(order_date) as day, COUNT(*) as order_count FROM orders GROUP BY DATE(order_date)",
+      "SELECT DATE_TRUNC('month', order_date) as month, AVG(total_amount) as avg_value FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT first_name || ' ' || last_name as full_name, email FROM customers",
+      "SELECT name, phone FROM users",
+      "SELECT p.name, c.name as category FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10",
+      "SELECT p.name, SUM(oi.quantity) as total_sold FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_sold DESC",
+      "SELECT * FROM products WHERE id NOT IN (SELECT DISTINCT product_id FROM order_items)",
+      "SELECT * FROM customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM orders)",
+      "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)",
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > (SELECT AVG(order_count) FROM (SELECT COUNT(*) as order_count FROM orders GROUP BY customer_id) as subq)",
+      "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "SELECT * FROM orders WHERE order_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') AND order_date < DATE_TRUNC('month', CURRENT_DATE)",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)",
+      "SELECT * FROM orders WHERE DATE(order_date) = CURRENT_DATE",
+      "SELECT * FROM users WHERE created_at >= DATE_TRUNC('week', CURRENT_DATE)",
+      "SELECT SUM(price * stock_quantity) as inventory_value FROM products",
+      "SELECT name, price, price * 0.3 as profit FROM products",
+      "SELECT id, total_amount, total_amount * 1.1 as with_tax FROM orders",
+      "SELECT name, price, price * 0.8 as discounted_price FROM products",
+      "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT * FROM products WHERE stock_quantity > 0 ORDER BY stock_quantity DESC",
+      "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC",
+      "SELECT * FROM products WHERE is_available = true ORDER BY price ASC",
+      "SELECT * FROM orders WHERE status = 'delivered' ORDER BY order_date DESC",
+      "SELECT * FROM products WHERE category_id IS NULL",
+      "SELECT * FROM users WHERE phone IS NULL",
+      "SELECT * FROM customers WHERE address IS NULL",
+      "SELECT * FROM products WHERE description IS NOT NULL",
+      "SELECT DISTINCT city FROM customers",
+      "SELECT DISTINCT category_id FROM products",
+      "SELECT DISTINCT payment_method FROM orders",
+      "SELECT DISTINCT status FROM orders",
+      "SELECT DISTINCT country FROM customers",
+      "SELECT * FROM products WHERE category_id IN (1, 2, 3)",
+      "SELECT * FROM orders WHERE status IN ('pending', 'processing', 'shipped')",
+      "SELECT * FROM customers WHERE city IN ('New York', 'Los Angeles', 'Chicago')",
+      "SELECT * FROM products WHERE category_id NOT IN (1)",
+      "SELECT DATE_TRUNC('month', order_date) as month, COUNT(*) as orders, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date) ORDER BY month DESC",
+      "SELECT p.name, COUNT(oi.id) as times_ordered, SUM(oi.quantity) as total_quantity, SUM(oi.subtotal) as total_revenue FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_revenue DESC",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as order_count, SUM(o.total_amount) as total_spent, MAX(o.order_date) as last_order FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT c.name as category, COUNT(p.id) as product_count, SUM(p.stock_quantity) as total_stock, AVG(p.price) as avg_price FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT payment_method, COUNT(*) as order_count, SUM(total_amount) as total_revenue FROM orders GROUP BY payment_method",
+      "SELECT status, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage FROM orders GROUP BY status",
+      "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5",
+      "SELECT p.name, COALESCE(SUM(oi.quantity), 0) as sold FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY sold ASC LIMIT 5",
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('quarter', CURRENT_DATE)",
+      "SELECT c.first_name, c.last_name, AVG(o.total_amount) as avg_order_value FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT name, stock_quantity FROM products WHERE stock_quantity < 20 AND is_available = true ORDER BY stock_quantity ASC",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'",
+      "SELECT * FROM orders WHERE total_amount > 1000 ORDER BY total_amount DESC",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as total_orders, SUM(o.total_amount) as lifetime_value FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY lifetime_value DESC",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name ORDER BY product_count DESC",
+      "SELECT AVG(item_count) as avg_items FROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id) as subq",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as orders, COUNT(o.id)::float / NULLIF(COUNT(DISTINCT o.customer_id), 0) as conversion FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "active": [
+      "SELECT * FROM users WHERE is_active = true",
+      "SELECT COUNT(*) FROM users WHERE is_active = true",
+      "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC"
+    ],
+    "activity": [
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as order_count, SUM(o.total_amount) as total_spent, MAX(o.order_date) as last_order FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "added": [
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('quarter', CURRENT_DATE)"
+    ],
+    "addresses": [
+      "SELECT * FROM customers WHERE address IS NULL"
+    ],
+    "alert": [
+      "SELECT name, stock_quantity FROM products WHERE stock_quantity < 20 AND is_available = true ORDER BY stock_quantity ASC"
+    ],
+    "all": [
+      "SELECT * FROM users",
+      "SELECT * FROM products",
+      "SELECT * FROM customers",
+      "SELECT * FROM orders",
+      "SELECT * FROM categories",
+      "SELECT COUNT(*) FROM users",
+      "SELECT SUM(total_amount) FROM orders",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT DISTINCT payment_method FROM orders"
+    ],
+    "alphabetically": [
+      "SELECT * FROM customers ORDER BY last_name, first_name"
+    ],
+    "amount": [
+      "SELECT customer_id, AVG(total_amount) as avg_order FROM orders GROUP BY customer_id"
+    ],
+    "amounts": [
+      "SELECT order_date, total_amount FROM orders",
+      "SELECT SUM(total_amount) FROM orders"
+    ],
+    "and": [
+      "SELECT name, price FROM products",
+      "SELECT order_date, total_amount FROM orders",
+      "SELECT * FROM products WHERE price BETWEEN 50 AND 200",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "SELECT first_name || ' ' || last_name as full_name, email FROM customers",
+      "SELECT name, phone FROM users"
+    ],
+    "ascending": [
+      "SELECT * FROM products ORDER BY price ASC"
+    ],
+    "available": [
+      "SELECT * FROM products WHERE is_available = true",
+      "SELECT COUNT(*) FROM products WHERE is_available = true",
+      "SELECT * FROM products WHERE is_available = true ORDER BY price ASC"
+    ],
+    "average": [
+      "SELECT AVG(price) FROM products",
+      "SELECT customer_id, AVG(total_amount) as avg_order FROM orders GROUP BY customer_id",
+      "SELECT DATE_TRUNC('month', order_date) as month, AVG(total_amount) as avg_value FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)",
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > (SELECT AVG(order_count) FROM (SELECT COUNT(*) as order_count FROM orders GROUP BY customer_id) as subq)",
+      "SELECT c.first_name, c.last_name, AVG(o.total_amount) as avg_order_value FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT AVG(item_count) as avg_items FROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id) as subq"
+    ],
+    "best": [
+      "SELECT p.name, SUM(oi.quantity) as total_sold FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_sold DESC"
+    ],
+    "bottom": [
+      "SELECT p.name, COALESCE(SUM(oi.quantity), 0) as sold FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY sold ASC LIMIT 5"
+    ],
+    "calculate": [
+      "SELECT SUM(price * stock_quantity) as inventory_value FROM products",
+      "SELECT AVG(item_count) as avg_items FROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id) as subq"
+    ],
+    "cancelled": [
+      "SELECT * FROM orders WHERE status = 'cancelled'"
+    ],
+    "card": [
+      "SELECT * FROM orders WHERE payment_method = 'credit_card'"
+    ],
+    "categories": [
+      "SELECT * FROM categories",
+      "SELECT category_id, COUNT(*) as count FROM products GROUP BY category_id HAVING COUNT(*) > 5",
+      "SELECT p.name, c.name as category FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT DISTINCT category_id FROM products",
+      "SELECT * FROM products WHERE category_id IN (1, 2, 3)"
+    ],
+    "category": [
+      "SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Electronics')",
+      "SELECT * FROM products WHERE category_id = 1",
+      "SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT category_id, COUNT(*) as product_count FROM products GROUP BY category_id",
+      "SELECT * FROM products WHERE category_id IS NULL",
+      "SELECT * FROM products WHERE category_id NOT IN (1)",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name ORDER BY product_count DESC"
+    ],
+    "certain": [
+      "SELECT * FROM customers WHERE city IN ('New York', 'Los Angeles', 'Chicago')"
+    ],
+    "cheaper": [
+      "SELECT * FROM products WHERE price < 50"
+    ],
+    "cheapest": [
+      "SELECT * FROM products ORDER BY price DESC",
+      "SELECT * FROM products ORDER BY price ASC LIMIT 5"
+    ],
+    "cities": [
+      "SELECT DISTINCT city FROM customers",
+      "SELECT * FROM customers WHERE city IN ('New York', 'Los Angeles', 'Chicago')"
+    ],
+    "city": [
+      "SELECT city, COUNT(*) as customer_count FROM customers GROUP BY city"
+    ],
+    "completed": [
+      "SELECT * FROM orders WHERE status = 'delivered' ORDER BY order_date DESC"
+    ],
+    "containing": [
+      "SELECT * FROM products WHERE name ILIKE '%phone%'"
+    ],
+    "conversion": [
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as orders, COUNT(o.id)::float / NULLIF(COUNT(DISTINCT o.customer_id), 0) as conversion FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "count": [
+      "SELECT COUNT(*) FROM users",
+      "SELECT COUNT(*) FROM users WHERE is_active = true",
+      "SELECT status, COUNT(*) as count FROM orders GROUP BY status",
+      "SELECT city, COUNT(*) as customer_count FROM customers GROUP BY city",
+      "SELECT DATE(order_date) as day, COUNT(*) as order_count FROM orders GROUP BY DATE(order_date)",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > (SELECT AVG(order_count) FROM (SELECT COUNT(*) as order_count FROM orders GROUP BY customer_id) as subq)",
+      "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name"
+    ],
+    "countries": [
+      "SELECT DISTINCT country FROM customers"
+    ],
+    "created": [
+      "SELECT * FROM users WHERE created_at >= '2024-01-01'"
+    ],
+    "creation": [
+      "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC"
+    ],
+    "credit": [
+      "SELECT * FROM orders WHERE payment_method = 'credit_card'"
+    ],
+    "customer": [
+      "SELECT first_name, last_name FROM customers",
+      "SELECT * FROM orders WHERE customer_id = 5",
+      "SELECT o.*, c.first_name, c.last_name FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT o.id, o.order_date, o.total_amount, c.first_name, c.last_name, c.email FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "SELECT customer_id, SUM(total_amount) as total_sales FROM orders GROUP BY customer_id",
+      "SELECT customer_id, AVG(total_amount) as avg_order FROM orders GROUP BY customer_id",
+      "SELECT first_name || ' ' || last_name as full_name, email FROM customers",
+      "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as order_count, SUM(o.total_amount) as total_spent, MAX(o.order_date) as last_order FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT c.first_name, c.last_name, AVG(o.total_amount) as avg_order_value FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as total_orders, SUM(o.total_amount) as lifetime_value FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY lifetime_value DESC",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as orders, COUNT(o.id)::float / NULLIF(COUNT(DISTINCT o.customer_id), 0) as conversion FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "customers": [
+      "SELECT * FROM customers",
+      "SELECT * FROM customers ORDER BY last_name, first_name",
+      "SELECT * FROM customers WHERE city = 'New York'",
+      "SELECT * FROM customers WHERE country = 'USA'",
+      "SELECT city, COUNT(*) as customer_count FROM customers GROUP BY city",
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 3",
+      "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10",
+      "SELECT * FROM customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM orders)",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > (SELECT AVG(order_count) FROM (SELECT COUNT(*) as order_count FROM orders GROUP BY customer_id) as subq)",
+      "SELECT * FROM customers WHERE address IS NULL",
+      "SELECT DISTINCT city FROM customers",
+      "SELECT DISTINCT country FROM customers",
+      "SELECT * FROM customers WHERE city IN ('New York', 'Los Angeles', 'Chicago')",
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'"
+    ],
+    "date": [
+      "SELECT * FROM orders ORDER BY order_date",
+      "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC",
+      "SELECT * FROM orders WHERE status = 'delivered' ORDER BY order_date DESC"
+    ],
+    "dates": [
+      "SELECT order_date, total_amount FROM orders"
+    ],
+    "day": [
+      "SELECT DATE(order_date) as day, COUNT(*) as order_count FROM orders GROUP BY DATE(order_date)"
+    ],
+    "days": [
+      "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'"
+    ],
+    "delivered": [
+      "SELECT * FROM orders WHERE status = 'delivered'"
+    ],
+    "descriptions": [
+      "SELECT * FROM products WHERE description IS NOT NULL"
+    ],
+    "details": [
+      "SELECT o.id, o.order_date, o.total_amount, c.first_name, c.last_name, c.email FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id"
+    ],
+    "discount": [
+      "SELECT name, price, price * 0.8 as discounted_price FROM products"
+    ],
+    "display": [
+      "SELECT * FROM orders",
+      "SELECT order_date, total_amount FROM orders",
+      "SELECT * FROM users LIMIT 20"
+    ],
+    "distinct": [
+      "SELECT DISTINCT city FROM customers"
+    ],
+    "distribution": [
+      "SELECT status, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage FROM orders GROUP BY status",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name ORDER BY product_count DESC"
+    ],
+    "dollars": [
+      "SELECT * FROM products WHERE price BETWEEN 50 AND 200"
+    ],
+    "duplicate": [
+      "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1"
+    ],
+    "electronics": [
+      "SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Electronics')"
+    ],
+    "email": [
+      "SELECT * FROM users WHERE email LIKE '%gmail%'"
+    ],
+    "emails": [
+      "SELECT email FROM users",
+      "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1",
+      "SELECT first_name || ' ' || last_name as full_name, email FROM customers"
+    ],
+    "ending": [
+      "SELECT * FROM users WHERE email LIKE '%gmail%'"
+    ],
+    "expensive": [
+      "SELECT * FROM products ORDER BY price DESC",
+      "SELECT * FROM products ORDER BY price DESC LIMIT 5",
+      "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)"
+    ],
+    "find": [
+      "SELECT * FROM users WHERE name = 'John'",
+      "SELECT * FROM products WHERE is_available = true",
+      "SELECT * FROM products WHERE category_id = 1",
+      "SELECT * FROM products WHERE price BETWEEN 50 AND 200",
+      "SELECT * FROM products WHERE name ILIKE '%phone%'",
+      "SELECT * FROM customers WHERE city = 'New York'",
+      "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1",
+      "SELECT * FROM users WHERE is_active = false",
+      "SELECT * FROM orders WHERE status = 'shipped'",
+      "SELECT p.name, SUM(oi.quantity) as total_sold FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_sold DESC",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > (SELECT AVG(order_count) FROM (SELECT COUNT(*) as order_count FROM orders GROUP BY customer_id) as subq)",
+      "SELECT * FROM products WHERE category_id IS NULL",
+      "SELECT * FROM products WHERE category_id IN (1, 2, 3)",
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'",
+      "SELECT * FROM orders WHERE total_amount > 1000 ORDER BY total_amount DESC"
+    ],
+    "first": [
+      "SELECT * FROM products LIMIT 10",
+      "SELECT * FROM users LIMIT 20"
+    ],
+    "full": [
+      "SELECT first_name || ' ' || last_name as full_name, email FROM customers"
+    ],
+    "generate": [
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as order_count, SUM(o.total_amount) as total_spent, MAX(o.order_date) as last_order FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "generating": [
+      "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5"
+    ],
+    "get": [
+      "SELECT * FROM products",
+      "SELECT * FROM products WHERE price > 100",
+      "SELECT email FROM users",
+      "SELECT name FROM products",
+      "SELECT * FROM orders WHERE status = 'delivered'",
+      "SELECT * FROM products ORDER BY price DESC LIMIT 5",
+      "SELECT * FROM orders WHERE order_date > '2024-01-15'",
+      "SELECT * FROM products WHERE name LIKE 'Mac%'",
+      "SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "SELECT * FROM products WHERE stock_quantity = 0",
+      "SELECT * FROM orders WHERE payment_method = 'credit_card'",
+      "SELECT * FROM orders WHERE status = 'cancelled'",
+      "SELECT p.name, c.name as category FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT * FROM customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM orders)",
+      "SELECT * FROM orders WHERE order_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') AND order_date < DATE_TRUNC('month', CURRENT_DATE)",
+      "SELECT * FROM users WHERE created_at >= DATE_TRUNC('week', CURRENT_DATE)",
+      "SELECT id, total_amount, total_amount * 1.1 as with_tax FROM orders",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT * FROM products WHERE is_available = true ORDER BY price ASC",
+      "SELECT * FROM users WHERE phone IS NULL",
+      "SELECT DISTINCT city FROM customers",
+      "SELECT DISTINCT status FROM orders",
+      "SELECT * FROM orders WHERE status IN ('pending', 'processing', 'shipped')",
+      "SELECT DATE_TRUNC('month', order_date) as month, COUNT(*) as orders, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date) ORDER BY month DESC",
+      "SELECT payment_method, COUNT(*) as order_count, SUM(total_amount) as total_revenue FROM orders GROUP BY payment_method",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('quarter', CURRENT_DATE)",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as total_orders, SUM(o.total_amount) as lifetime_value FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY lifetime_value DESC"
+    ],
+    "gmail": [
+      "SELECT * FROM users WHERE email LIKE '%gmail%'"
+    ],
+    "greater": [
+      "SELECT * FROM products WHERE price > 100"
+    ],
+    "high": [
+      "SELECT * FROM orders WHERE total_amount > 1000 ORDER BY total_amount DESC"
+    ],
+    "how": [
+      "SELECT COUNT(*) FROM products",
+      "SELECT COUNT(*) FROM products WHERE is_available = true"
+    ],
+    "inactive": [
+      "SELECT * FROM users WHERE is_active = false"
+    ],
+    "info": [
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id"
+    ],
+    "inventory": [
+      "SELECT SUM(price * stock_quantity) as inventory_value FROM products",
+      "SELECT c.name as category, COUNT(p.id) as product_count, SUM(p.stock_quantity) as total_stock, AVG(p.price) as avg_price FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name"
+    ],
+    "items": [
+      "SELECT oi.*, p.name as product_name FROM order_items oi JOIN products p ON oi.product_id = p.id",
+      "SELECT AVG(item_count) as avg_items FROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id) as subq"
+    ],
+    "january": [
+      "SELECT * FROM orders WHERE order_date >= '2024-01-01' AND order_date < '2024-02-01'",
+      "SELECT * FROM orders WHERE order_date > '2024-01-15'"
+    ],
+    "john": [
+      "SELECT * FROM users WHERE name = 'John'"
+    ],
+    "larger": [
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)"
+    ],
+    "last": [
+      "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "SELECT * FROM orders WHERE order_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') AND order_date < DATE_TRUNC('month', CURRENT_DATE)",
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('quarter', CURRENT_DATE)"
+    ],
+    "lifetime": [
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as total_orders, SUM(o.total_amount) as lifetime_value FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY lifetime_value DESC"
+    ],
+    "list": [
+      "SELECT * FROM customers",
+      "SELECT * FROM users WHERE is_active = true",
+      "SELECT first_name, last_name FROM customers",
+      "SELECT * FROM orders WHERE customer_id = 5",
+      "SELECT * FROM products ORDER BY price DESC",
+      "SELECT * FROM customers ORDER BY last_name, first_name",
+      "SELECT * FROM orders ORDER BY order_date DESC LIMIT 3",
+      "SELECT * FROM orders WHERE order_date >= '2024-01-01' AND order_date < '2024-02-01'",
+      "SELECT * FROM customers WHERE country = 'USA'",
+      "SELECT o.id, o.order_date, o.total_amount, c.first_name, c.last_name, c.email FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT * FROM products WHERE stock_quantity > 50",
+      "SELECT * FROM orders WHERE payment_method = 'paypal'",
+      "SELECT name, phone FROM users",
+      "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)",
+      "SELECT name, price, price * 0.8 as discounted_price FROM products",
+      "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC",
+      "SELECT * FROM products WHERE description IS NOT NULL",
+      "SELECT DISTINCT payment_method FROM orders",
+      "SELECT * FROM customers WHERE city IN ('New York', 'Los Angeles', 'Chicago')",
+      "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5",
+      "SELECT name, stock_quantity FROM products WHERE stock_quantity < 20 AND is_available = true ORDER BY stock_quantity ASC"
+    ],
+    "low": [
+      "SELECT * FROM products WHERE stock_quantity < 10",
+      "SELECT name, stock_quantity FROM products WHERE stock_quantity < 20 AND is_available = true ORDER BY stock_quantity ASC"
+    ],
+    "mac": [
+      "SELECT * FROM products WHERE name LIKE 'Mac%'"
+    ],
+    "many": [
+      "SELECT COUNT(*) FROM products",
+      "SELECT COUNT(*) FROM products WHERE is_available = true"
+    ],
+    "margin": [
+      "SELECT name, price, price * 0.3 as profit FROM products"
+    ],
+    "maximum": [
+      "SELECT MAX(price) FROM products"
+    ],
+    "method": [
+      "SELECT payment_method, COUNT(*) as order_count, SUM(total_amount) as total_revenue FROM orders GROUP BY payment_method"
+    ],
+    "methods": [
+      "SELECT DISTINCT payment_method FROM orders"
+    ],
+    "minimum": [
+      "SELECT MIN(price) FROM products"
+    ],
+    "month": [
+      "SELECT DATE_TRUNC('month', order_date) as month, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT DATE_TRUNC('month', order_date) as month, AVG(total_amount) as avg_value FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT * FROM orders WHERE order_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') AND order_date < DATE_TRUNC('month', CURRENT_DATE)"
+    ],
+    "monthly": [
+      "SELECT DATE_TRUNC('month', order_date) as month, COUNT(*) as orders, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date) ORDER BY month DESC"
+    ],
+    "more": [
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "SELECT category_id, COUNT(*) as count FROM products GROUP BY category_id HAVING COUNT(*) > 5",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 3",
+      "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'"
+    ],
+    "most": [
+      "SELECT * FROM products ORDER BY price DESC",
+      "SELECT * FROM products ORDER BY price DESC LIMIT 5"
+    ],
+    "multiple": [
+      "SELECT * FROM products WHERE category_id IN (1, 2, 3)"
+    ],
+    "name": [
+      "SELECT * FROM users WHERE name = 'John'",
+      "SELECT * FROM users ORDER BY name",
+      "SELECT * FROM products WHERE name ILIKE '%phone%'"
+    ],
+    "names": [
+      "SELECT name, price FROM products",
+      "SELECT first_name, last_name FROM customers",
+      "SELECT name FROM products",
+      "SELECT o.*, c.first_name, c.last_name FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT oi.*, p.name as product_name FROM order_items oi JOIN products p ON oi.product_id = p.id",
+      "SELECT first_name || ' ' || last_name as full_name, email FROM customers",
+      "SELECT name, phone FROM users",
+      "SELECT p.name, c.name as category FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "never": [
+      "SELECT * FROM products WHERE id NOT IN (SELECT DISTINCT product_id FROM order_items)",
+      "SELECT * FROM customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM orders)"
+    ],
+    "new": [
+      "SELECT * FROM customers WHERE city = 'New York'"
+    ],
+    "newest": [
+      "SELECT * FROM orders ORDER BY order_date DESC LIMIT 3"
+    ],
+    "not": [
+      "SELECT * FROM products WHERE category_id NOT IN (1)"
+    ],
+    "null": [
+      "SELECT * FROM products WHERE category_id IS NULL"
+    ],
+    "number": [
+      "SELECT COUNT(*) FROM orders",
+      "SELECT category_id, COUNT(*) as product_count FROM products GROUP BY category_id"
+    ],
+    "numbers": [
+      "SELECT name, phone FROM users",
+      "SELECT * FROM users WHERE phone IS NULL"
+    ],
+    "order": [
+      "SELECT order_date, total_amount FROM orders",
+      "SELECT SUM(total_amount) FROM orders",
+      "SELECT oi.*, p.name as product_name FROM order_items oi JOIN products p ON oi.product_id = p.id",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "SELECT customer_id, AVG(total_amount) as avg_order FROM orders GROUP BY customer_id",
+      "SELECT DATE_TRUNC('month', order_date) as month, AVG(total_amount) as avg_value FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > (SELECT AVG(order_count) FROM (SELECT COUNT(*) as order_count FROM orders GROUP BY customer_id) as subq)",
+      "SELECT id, total_amount, total_amount * 1.1 as with_tax FROM orders",
+      "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT DISTINCT status FROM orders",
+      "SELECT status, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage FROM orders GROUP BY status",
+      "SELECT c.first_name, c.last_name, AVG(o.total_amount) as avg_order_value FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT AVG(item_count) as avg_items FROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id) as subq"
+    ],
+    "ordered": [
+      "SELECT * FROM products ORDER BY price ASC",
+      "SELECT * FROM products WHERE id NOT IN (SELECT DISTINCT product_id FROM order_items)",
+      "SELECT * FROM customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM orders)",
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'"
+    ],
+    "orders": [
+      "SELECT * FROM orders",
+      "SELECT * FROM orders WHERE customer_id = 5",
+      "SELECT * FROM orders WHERE status = 'pending'",
+      "SELECT * FROM orders WHERE status = 'delivered'",
+      "SELECT COUNT(*) FROM orders",
+      "SELECT SUM(total_amount) FROM orders",
+      "SELECT * FROM orders ORDER BY order_date",
+      "SELECT * FROM orders ORDER BY order_date DESC LIMIT 3",
+      "SELECT * FROM orders WHERE order_date >= '2024-01-01' AND order_date < '2024-02-01'",
+      "SELECT * FROM orders WHERE order_date > '2024-01-15'",
+      "SELECT o.*, c.first_name, c.last_name FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT o.id, o.order_date, o.total_amount, c.first_name, c.last_name, c.email FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT status, COUNT(*) as count FROM orders GROUP BY status",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 3",
+      "SELECT * FROM orders WHERE payment_method = 'credit_card'",
+      "SELECT * FROM orders WHERE payment_method = 'paypal'",
+      "SELECT * FROM orders WHERE status = 'processing'",
+      "SELECT * FROM orders WHERE status = 'shipped'",
+      "SELECT * FROM orders WHERE status = 'cancelled'",
+      "SELECT DATE(order_date) as day, COUNT(*) as order_count FROM orders GROUP BY DATE(order_date)",
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "SELECT * FROM orders WHERE order_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') AND order_date < DATE_TRUNC('month', CURRENT_DATE)",
+      "SELECT * FROM orders WHERE DATE(order_date) = CURRENT_DATE",
+      "SELECT * FROM orders WHERE status = 'delivered' ORDER BY order_date DESC",
+      "SELECT * FROM orders WHERE status IN ('pending', 'processing', 'shipped')",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'",
+      "SELECT * FROM orders WHERE total_amount > 1000 ORDER BY total_amount DESC"
+    ],
+    "paid": [
+      "SELECT * FROM orders WHERE payment_method = 'credit_card'",
+      "SELECT * FROM orders WHERE payment_method = 'paypal'"
+    ],
+    "payment": [
+      "SELECT DISTINCT payment_method FROM orders",
+      "SELECT payment_method, COUNT(*) as order_count, SUM(total_amount) as total_revenue FROM orders GROUP BY payment_method"
+    ],
+    "paypal": [
+      "SELECT * FROM orders WHERE payment_method = 'paypal'"
+    ],
+    "pending": [
+      "SELECT * FROM orders WHERE status = 'pending'",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'"
+    ],
+    "per": [
+      "SELECT category_id, COUNT(*) as product_count FROM products GROUP BY category_id",
+      "SELECT DATE(order_date) as day, COUNT(*) as order_count FROM orders GROUP BY DATE(order_date)",
+      "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT AVG(item_count) as avg_items FROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id) as subq"
+    ],
+    "performance": [
+      "SELECT p.name, COUNT(oi.id) as times_ordered, SUM(oi.quantity) as total_quantity, SUM(oi.subtotal) as total_revenue FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_revenue DESC"
+    ],
+    "phone": [
+      "SELECT * FROM products WHERE name ILIKE '%phone%'",
+      "SELECT name, phone FROM users",
+      "SELECT * FROM users WHERE phone IS NULL"
+    ],
+    "price": [
+      "SELECT * FROM products WHERE price > 100",
+      "SELECT AVG(price) FROM products",
+      "SELECT MAX(price) FROM products",
+      "SELECT MIN(price) FROM products",
+      "SELECT * FROM products ORDER BY price ASC",
+      "SELECT name, price, price * 0.8 as discounted_price FROM products",
+      "SELECT * FROM products WHERE is_available = true ORDER BY price ASC"
+    ],
+    "priced": [
+      "SELECT * FROM products WHERE price >= 100 AND price <= 500"
+    ],
+    "prices": [
+      "SELECT name, price FROM products"
+    ],
+    "processing": [
+      "SELECT * FROM orders WHERE status = 'processing'"
+    ],
+    "product": [
+      "SELECT name, price FROM products",
+      "SELECT name FROM products",
+      "SELECT AVG(price) FROM products",
+      "SELECT MAX(price) FROM products",
+      "SELECT MIN(price) FROM products",
+      "SELECT oi.*, p.name as product_name FROM order_items oi JOIN products p ON oi.product_id = p.id",
+      "SELECT o.id, c.first_name, c.last_name, p.name, oi.quantity, oi.unit_price FROM orders o JOIN customers c ON o.customer_id = c.id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id",
+      "SELECT p.name, c.name as category FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT DISTINCT category_id FROM products",
+      "SELECT p.name, COUNT(oi.id) as times_ordered, SUM(oi.quantity) as total_quantity, SUM(oi.subtotal) as total_revenue FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_revenue DESC",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name ORDER BY product_count DESC"
+    ],
+    "products": [
+      "SELECT * FROM products",
+      "SELECT * FROM products WHERE price > 100",
+      "SELECT * FROM products WHERE price < 50",
+      "SELECT * FROM products WHERE is_available = true",
+      "SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Electronics')",
+      "SELECT * FROM products WHERE category_id = 1",
+      "SELECT COUNT(*) FROM products",
+      "SELECT COUNT(*) FROM products WHERE is_available = true",
+      "SELECT * FROM products ORDER BY price ASC",
+      "SELECT * FROM products ORDER BY price DESC",
+      "SELECT * FROM products LIMIT 10",
+      "SELECT * FROM products ORDER BY price DESC LIMIT 5",
+      "SELECT * FROM products ORDER BY price ASC LIMIT 5",
+      "SELECT * FROM products WHERE price BETWEEN 50 AND 200",
+      "SELECT * FROM products WHERE price >= 100 AND price <= 500",
+      "SELECT * FROM products WHERE name ILIKE '%phone%'",
+      "SELECT * FROM products WHERE name LIKE 'Mac%'",
+      "SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id",
+      "SELECT category_id, COUNT(*) as product_count FROM products GROUP BY category_id",
+      "SELECT category_id, COUNT(*) as count FROM products GROUP BY category_id HAVING COUNT(*) > 5",
+      "SELECT * FROM products WHERE stock_quantity < 10",
+      "SELECT * FROM products WHERE stock_quantity = 0",
+      "SELECT * FROM products WHERE stock_quantity > 50",
+      "SELECT * FROM products WHERE is_available = false",
+      "SELECT p.name, SUM(oi.quantity) as total_sold FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_sold DESC",
+      "SELECT * FROM products WHERE id NOT IN (SELECT DISTINCT product_id FROM order_items)",
+      "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)",
+      "SELECT name, price, price * 0.3 as profit FROM products",
+      "SELECT name, price, price * 0.8 as discounted_price FROM products",
+      "SELECT * FROM products WHERE stock_quantity > 0 ORDER BY stock_quantity DESC",
+      "SELECT * FROM products WHERE is_available = true ORDER BY price ASC",
+      "SELECT * FROM products WHERE category_id IS NULL",
+      "SELECT * FROM products WHERE description IS NOT NULL",
+      "SELECT * FROM products WHERE category_id IN (1, 2, 3)",
+      "SELECT * FROM products WHERE category_id NOT IN (1)",
+      "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5",
+      "SELECT p.name, COALESCE(SUM(oi.quantity), 0) as sold FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY sold ASC LIMIT 5",
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('quarter', CURRENT_DATE)",
+      "SELECT name, stock_quantity FROM products WHERE stock_quantity < 20 AND is_available = true ORDER BY stock_quantity ASC"
+    ],
+    "profit": [
+      "SELECT name, price, price * 0.3 as profit FROM products"
+    ],
+    "quantity": [
+      "SELECT * FROM products WHERE stock_quantity > 0 ORDER BY stock_quantity DESC"
+    ],
+    "quarter": [
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('quarter', CURRENT_DATE)"
+    ],
+    "rate": [
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as orders, COUNT(o.id)::float / NULLIF(COUNT(DISTINCT o.customer_id), 0) as conversion FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "recent": [
+      "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'"
+    ],
+    "registered": [
+      "SELECT * FROM users WHERE created_at >= DATE_TRUNC('week', CURRENT_DATE)"
+    ],
+    "report": [
+      "SELECT DATE_TRUNC('month', order_date) as month, COUNT(*) as orders, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date) ORDER BY month DESC",
+      "SELECT p.name, COUNT(oi.id) as times_ordered, SUM(oi.quantity) as total_quantity, SUM(oi.subtotal) as total_revenue FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_revenue DESC",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as order_count, SUM(o.total_amount) as total_spent, MAX(o.order_date) as last_order FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT c.name as category, COUNT(p.id) as product_count, SUM(p.stock_quantity) as total_stock, AVG(p.price) as avg_price FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name"
+    ],
+    "revenue": [
+      "SELECT SUM(total_amount) FROM orders",
+      "SELECT DATE_TRUNC('month', order_date) as month, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT payment_method, COUNT(*) as order_count, SUM(total_amount) as total_revenue FROM orders GROUP BY payment_method",
+      "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5"
+    ],
+    "s": [
+      "SELECT * FROM orders WHERE DATE(order_date) = CURRENT_DATE"
+    ],
+    "sales": [
+      "SELECT customer_id, SUM(total_amount) as total_sales FROM orders GROUP BY customer_id",
+      "SELECT DATE_TRUNC('month', order_date) as month, COUNT(*) as orders, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date) ORDER BY month DESC"
+    ],
+    "search": [
+      "SELECT * FROM users WHERE email LIKE '%gmail%'"
+    ],
+    "selling": [
+      "SELECT p.name, SUM(oi.quantity) as total_sold FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_sold DESC",
+      "SELECT p.name, COALESCE(SUM(oi.quantity), 0) as sold FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY sold ASC LIMIT 5"
+    ],
+    "shipped": [
+      "SELECT * FROM orders WHERE status = 'shipped'"
+    ],
+    "show": [
+      "SELECT * FROM users",
+      "SELECT * FROM categories",
+      "SELECT * FROM products WHERE price < 50",
+      "SELECT name, price FROM products",
+      "SELECT * FROM products WHERE category_id = (SELECT id FROM categories WHERE name = 'Electronics')",
+      "SELECT * FROM orders WHERE status = 'pending'",
+      "SELECT * FROM products ORDER BY price ASC",
+      "SELECT * FROM orders ORDER BY order_date",
+      "SELECT * FROM products LIMIT 10",
+      "SELECT * FROM products ORDER BY price ASC LIMIT 5",
+      "SELECT * FROM products WHERE price >= 100 AND price <= 500",
+      "SELECT * FROM users WHERE created_at >= '2024-01-01'",
+      "SELECT o.*, c.first_name, c.last_name FROM orders o JOIN customers c ON o.customer_id = c.id",
+      "SELECT oi.*, p.name as product_name FROM order_items oi JOIN products p ON oi.product_id = p.id",
+      "SELECT category_id, COUNT(*) as product_count FROM products GROUP BY category_id",
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "SELECT * FROM products WHERE stock_quantity < 10",
+      "SELECT * FROM products WHERE is_available = false",
+      "SELECT * FROM orders WHERE status = 'processing'",
+      "SELECT DATE_TRUNC('month', order_date) as month, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT first_name || ' ' || last_name as full_name, email FROM customers",
+      "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10",
+      "SELECT * FROM products WHERE id NOT IN (SELECT DISTINCT product_id FROM order_items)",
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "SELECT * FROM orders WHERE DATE(order_date) = CURRENT_DATE",
+      "SELECT name, price, price * 0.3 as profit FROM products",
+      "SELECT c.first_name, c.last_name, COUNT(o.id) as order_count FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT * FROM products WHERE stock_quantity > 0 ORDER BY stock_quantity DESC",
+      "SELECT * FROM orders WHERE status = 'delivered' ORDER BY order_date DESC",
+      "SELECT * FROM customers WHERE address IS NULL",
+      "SELECT DISTINCT category_id FROM products",
+      "SELECT DISTINCT country FROM customers",
+      "SELECT * FROM products WHERE category_id NOT IN (1)",
+      "SELECT p.name, COUNT(oi.id) as times_ordered, SUM(oi.quantity) as total_quantity, SUM(oi.subtotal) as total_revenue FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_revenue DESC",
+      "SELECT c.name as category, COUNT(p.id) as product_count, SUM(p.stock_quantity) as total_stock, AVG(p.price) as avg_price FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT status, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage FROM orders GROUP BY status",
+      "SELECT p.name, COALESCE(SUM(oi.quantity), 0) as sold FROM products p LEFT JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY sold ASC LIMIT 5",
+      "SELECT c.first_name, c.last_name, AVG(o.total_amount) as avg_order_value FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'",
+      "SELECT c.name, COUNT(p.id) as product_count FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name ORDER BY product_count DESC",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as orders, COUNT(o.id)::float / NULLIF(COUNT(DISTINCT o.customer_id), 0) as conversion FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name"
+    ],
+    "sort": [
+      "SELECT * FROM users ORDER BY name"
+    ],
+    "sorted": [
+      "SELECT * FROM orders ORDER BY order_date",
+      "SELECT * FROM products WHERE stock_quantity > 0 ORDER BY stock_quantity DESC",
+      "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC",
+      "SELECT * FROM products WHERE is_available = true ORDER BY price ASC",
+      "SELECT * FROM orders WHERE status = 'delivered' ORDER BY order_date DESC"
+    ],
+    "specific": [
+      "SELECT * FROM orders WHERE status IN ('pending', 'processing', 'shipped')"
+    ],
+    "spending": [
+      "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10"
+    ],
+    "spent": [
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000"
+    ],
+    "starting": [
+      "SELECT * FROM products WHERE name LIKE 'Mac%'"
+    ],
+    "status": [
+      "SELECT status, COUNT(*) as count FROM orders GROUP BY status",
+      "SELECT c.name as category, COUNT(p.id) as product_count, SUM(p.stock_quantity) as total_stock, AVG(p.price) as avg_price FROM categories c LEFT JOIN products p ON c.id = p.category_id GROUP BY c.id, c.name",
+      "SELECT status, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage FROM orders GROUP BY status"
+    ],
+    "statuses": [
+      "SELECT DISTINCT status FROM orders",
+      "SELECT * FROM orders WHERE status IN ('pending', 'processing', 'shipped')"
+    ],
+    "stock": [
+      "SELECT * FROM products WHERE stock_quantity < 10",
+      "SELECT * FROM products WHERE stock_quantity = 0",
+      "SELECT * FROM products WHERE stock_quantity > 50",
+      "SELECT * FROM products WHERE stock_quantity > 0 ORDER BY stock_quantity DESC",
+      "SELECT name, stock_quantity FROM products WHERE stock_quantity < 20 AND is_available = true ORDER BY stock_quantity ASC"
+    ],
+    "sum": [
+      "SELECT SUM(total_amount) FROM orders"
+    ],
+    "tax": [
+      "SELECT id, total_amount, total_amount * 1.1 as with_tax FROM orders"
+    ],
+    "than": [
+      "SELECT * FROM products WHERE price > 100",
+      "SELECT * FROM products WHERE price < 50",
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "SELECT category_id, COUNT(*) as count FROM products GROUP BY category_id HAVING COUNT(*) > 5",
+      "SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 3",
+      "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)",
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "SELECT * FROM orders WHERE status = 'pending' AND order_date < CURRENT_DATE - INTERVAL '3 days'"
+    ],
+    "their": [
+      "SELECT p.name, c.name as category FROM products p JOIN categories c ON p.category_id = c.id"
+    ],
+    "this": [
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)",
+      "SELECT * FROM users WHERE created_at >= DATE_TRUNC('week', CURRENT_DATE)"
+    ],
+    "today": [
+      "SELECT * FROM orders WHERE DATE(order_date) = CURRENT_DATE"
+    ],
+    "top": [
+      "SELECT * FROM products ORDER BY price DESC LIMIT 5",
+      "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10",
+      "SELECT p.name, SUM(oi.subtotal) as revenue FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY revenue DESC LIMIT 5"
+    ],
+    "total": [
+      "SELECT COUNT(*) FROM orders",
+      "SELECT SUM(total_amount) FROM orders",
+      "SELECT customer_id, SUM(total_amount) as total_sales FROM orders GROUP BY customer_id",
+      "SELECT DATE_TRUNC('month', order_date) as month, SUM(total_amount) as revenue FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT c.first_name, c.last_name, SUM(o.total_amount) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY total_spent DESC LIMIT 10",
+      "SELECT SUM(price * stock_quantity) as inventory_value FROM products"
+    ],
+    "totals": [
+      "SELECT id, total_amount, total_amount * 1.1 as with_tax FROM orders"
+    ],
+    "unavailable": [
+      "SELECT * FROM products WHERE is_available = false"
+    ],
+    "unique": [
+      "SELECT DISTINCT category_id FROM products",
+      "SELECT DISTINCT status FROM orders"
+    ],
+    "usa": [
+      "SELECT * FROM customers WHERE country = 'USA'"
+    ],
+    "used": [
+      "SELECT DISTINCT payment_method FROM orders"
+    ],
+    "user": [
+      "SELECT email FROM users",
+      "SELECT name, phone FROM users"
+    ],
+    "users": [
+      "SELECT * FROM users",
+      "SELECT * FROM users WHERE name = 'John'",
+      "SELECT * FROM users WHERE is_active = true",
+      "SELECT COUNT(*) FROM users",
+      "SELECT COUNT(*) FROM users WHERE is_active = true",
+      "SELECT * FROM users ORDER BY name",
+      "SELECT * FROM users LIMIT 20",
+      "SELECT * FROM users WHERE created_at >= '2024-01-01'",
+      "SELECT * FROM users WHERE email LIKE '%gmail%'",
+      "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1",
+      "SELECT * FROM users WHERE is_active = false",
+      "SELECT * FROM users WHERE created_at >= DATE_TRUNC('week', CURRENT_DATE)",
+      "SELECT * FROM users WHERE is_active = true ORDER BY created_at DESC",
+      "SELECT * FROM users WHERE phone IS NULL"
+    ],
+    "value": [
+      "SELECT DATE_TRUNC('month', order_date) as month, AVG(total_amount) as avg_value FROM orders GROUP BY DATE_TRUNC('month', order_date)",
+      "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders)",
+      "SELECT SUM(price * stock_quantity) as inventory_value FROM products",
+      "SELECT c.first_name, c.last_name, AVG(o.total_amount) as avg_order_value FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name",
+      "SELECT * FROM orders WHERE total_amount > 1000 ORDER BY total_amount DESC",
+      "SELECT c.id, c.first_name, c.last_name, COUNT(o.id) as total_orders, SUM(o.total_amount) as lifetime_value FROM customers c LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.first_name, c.last_name ORDER BY lifetime_value DESC"
+    ],
+    "we": [
+      "SELECT COUNT(*) FROM products"
+    ],
+    "week": [
+      "SELECT * FROM users WHERE created_at >= DATE_TRUNC('week', CURRENT_DATE)"
+    ],
+    "who": [
+      "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000",
+      "SELECT * FROM customers WHERE id NOT IN (SELECT DISTINCT customer_id FROM orders)",
+      "SELECT DISTINCT c.* FROM customers c JOIN orders o ON c.id = o.customer_id WHERE o.order_date >= CURRENT_DATE - INTERVAL '30 days'"
+    ],
+    "without": [
+      "SELECT * FROM users WHERE phone IS NULL",
+      "SELECT * FROM customers WHERE address IS NULL"
+    ],
+    "year": [
+      "SELECT * FROM products WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)"
+    ],
+    "york": [
+      "SELECT * FROM customers WHERE city = 'New York'"
+    ]
+  }
+}
