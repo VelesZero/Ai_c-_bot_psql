@@ -28,3 +28,6 @@ sudo apt-get install libpqxx-dev nlohmann-json3-dev postgresql-server-dev-all
 ### Arch linux
 ```zsh
 sudo pacman -S libpqxx nlohmann-json postgresql-libs
+
+
+i'm winner?
