@@ -41,16 +41,9 @@ bool MLModelTrainer::loadDataset(const std::string& path) {
 
 void MLModelTrainer::buildVocabularies() {
     for (const auto& example : dataset_) {
-        auto nl_tokens = nl_vocab_.encode(example.nl_query);
-        auto sql_tokens = sql_vocab_.encode(example.sql_query);
-        
-        for (const auto& token : nl_tokens) {
-            nl_vocab_.addWord(nl_vocab_.getWord(token));
-        }
-        
-        for (const auto& token : sql_tokens) {
-            sql_vocab_.addWord(sql_vocab_.getWord(token));
-        }
+        // Learn vocabulary from raw sentences
+        nl_vocab_.addSentence(example.nl_query);
+        sql_vocab_.addSentence(example.sql_query);
     }
     
     std::cout << "NL Vocabulary size: " << nl_vocab_.size() << std::endl;
@@ -90,32 +83,76 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
         optimizer.param_groups()[0].params().push_back(p);
     }
     
-    auto criterion = torch::nn::CrossEntropyLoss();
+    auto criterion = torch::nn::CrossEntropyLoss(
+        torch::nn::CrossEntropyLossOptions().ignore_index(Vocabulary::PAD_TOKEN)
+    );
+    
+    const int total_examples = dataset_.size();
+    const int log_interval = std::max(1, total_examples / 50);  // Show ~50 progress steps per epoch
     
     for (int epoch = 0; epoch < epochs; epoch++) {
         float total_loss = 0.0;
+        int example_count = 0;
+        auto epoch_start = std::chrono::steady_clock::now();
         
-        for (const auto& example : dataset_) {
+        // Progress bar header
+        std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs << " [";
+        int bar_width = 50;
+        
+        for (int i = 0; i < dataset_.size(); ++i) {
+            const auto& example = dataset_[i];
             auto [src, trg] = prepareData(example);
             
             optimizer.zero_grad();
             
-            auto output = model_->forward(src, trg);
+            auto outputs = model_->forward(src, trg);
+            auto outputs_slice = outputs.slice(0, 1);
+            auto trg_slice = trg.slice(0, 1);
             
-            // Reshape for loss calculation
-            output = output[1].view({-1, output.size(2)});
-            trg = trg[1].view({-1});
+            auto logits = outputs_slice.reshape({-1, outputs.size(2)});
+            auto targets = trg_slice.reshape({-1});
             
-            auto loss = criterion(output, trg);
+            auto loss = criterion(logits, targets);
             loss.backward();
             optimizer.step();
             
             total_loss += loss.item<float>();
+            example_count++;
+            
+            // Update progress bar
+            if (i % log_interval == 0 || i == total_examples - 1) {
+                float progress = static_cast<float>(i + 1) / total_examples;
+                int pos = bar_width * progress;
+                std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs << " [";
+                for (int i = 0; i < bar_width; ++i) {
+                    if (i < pos) std::cout << "=";
+                    else if (i == pos) std::cout << ">";
+                    else std::cout << " ";
+                }
+                std::cout << "] " << int(progress * 100.0) << "%" << std::flush;
+            }
         }
         
-        if ((epoch + 1) % 10 == 0) {
-            std::cout << "Epoch " << (epoch + 1) << "/" << epochs 
-                      << " - Loss: " << (total_loss / dataset_.size()) << std::endl;
+        // Epoch summary
+        auto epoch_end = std::chrono::steady_clock::now();
+        auto epoch_duration = std::chrono::duration_cast<std::chrono::seconds>(epoch_end - epoch_start);
+        float avg_loss = total_loss / example_count;
+        
+        std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs << " [";
+        for (int i = 0; i < bar_width; ++i) std::cout << "=";
+        std::cout << "] " << "100% " << "(" << epoch_duration.count() << "s)"
+                  << " Loss: " << avg_loss << std::endl;
+        
+        // Show example predictions every 5 epochs
+        if ((epoch + 1) % 5 == 0 && !dataset_.empty()) {
+            std::cout << "\nExample predictions after epoch " << (epoch + 1) << ":\n";
+            for (int i = 0; i < std::min(2, static_cast<int>(dataset_.size())); i++) {
+                const auto& ex = dataset_[i];
+                auto pred = predict(ex.nl_query);
+                std::cout << "  NL: " << ex.nl_query << "\n";
+                std::cout << "  Pred SQL: " << pred << "\n";
+                std::cout << "  True SQL: " << ex.sql_query << "\n\n";
+            }
         }
     }
     

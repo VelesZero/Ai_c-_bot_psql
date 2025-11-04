@@ -27,6 +27,8 @@ public:
         torch::Tensor hidden, 
         torch::Tensor cell
     );
+    // Expose output vocabulary size (number of classes)
+    int output_vocab_size() const { return static_cast<int>(fc_->options.out_features()); }
     
 private:
     torch::nn::Embedding embedding_{nullptr};

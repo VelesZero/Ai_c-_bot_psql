@@ -24,6 +24,13 @@ void Vocabulary::addWord(const std::string& word) {
     }
 }
 
+void Vocabulary::addSentence(const std::string& text) {
+    auto tokens = tokenize(text);
+    for (const auto& t : tokens) {
+        addWord(t);
+    }
+}
+
 int Vocabulary::getIndex(const std::string& word) const {
     auto it = word2idx_.find(word);
     return (it != word2idx_.end()) ? it->second : UNK_TOKEN;

@@ -1,63 +1,4004 @@
 {
   "examples": [
-    {"nl": "Show all users", "sql": "SELECT * FROM users"},
-    {"nl": "Get all products", "sql": "SELECT * FROM products"},
-    {"nl": "List all customers", "sql": "SELECT * FROM customers"},
-    {"nl": "Display all orders", "sql": "SELECT * FROM orders"},
-    {"nl": "Show all categories", "sql": "SELECT * FROM categories"},
-    
-    {"nl": "Show 5 cheapest products", "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 5"},
-    {"nl": "Get 10 most expensive products", "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 10"},
-    {"nl": "Show top 3 products", "sql": "SELECT * FROM products LIMIT 3"},
-    {"nl": "List 20 newest users", "sql": "SELECT * FROM users ORDER BY created_at DESC LIMIT 20"},
-    {"nl": "Get first 15 orders", "sql": "SELECT * FROM orders LIMIT 15"},
-    
-    {"nl": "Count all users", "sql": "SELECT COUNT(*) FROM users"},
-    {"nl": "How many products", "sql": "SELECT COUNT(*) FROM products"},
-    {"nl": "Total number of orders", "sql": "SELECT COUNT(*) FROM orders"},
-    {"nl": "Count customers", "sql": "SELECT COUNT(*) FROM customers"},
-    
-    {"nl": "Products cheaper than 100", "sql": "SELECT * FROM products WHERE price < 100"},
-    {"nl": "Products less than 50", "sql": "SELECT * FROM products WHERE price < 50"},
-    {"nl": "Products under 200", "sql": "SELECT * FROM products WHERE price < 200"},
-    {"nl": "Products more expensive than 100", "sql": "SELECT * FROM products WHERE price > 100"},
-    {"nl": "Products above 500", "sql": "SELECT * FROM products WHERE price > 500"},
-    
-    {"nl": "Products between 50 and 200", "sql": "SELECT * FROM products WHERE price BETWEEN 50 AND 200"},
-    {"nl": "Products between 100 and 500", "sql": "SELECT * FROM products WHERE price BETWEEN 100 AND 500"},
-    
-    {"nl": "Users named John", "sql": "SELECT * FROM users WHERE name = 'John'"},
-    {"nl": "Find user Alice", "sql": "SELECT * FROM users WHERE name = 'Alice'"},
-    {"nl": "Products in category Electronics", "sql": "SELECT * FROM products WHERE category = 'Electronics'"},
-    
-    {"nl": "Show user names and emails", "sql": "SELECT name, email FROM users"},
-    {"nl": "Get product names and prices", "sql": "SELECT name, price FROM products"},
-    {"nl": "List order totals", "sql": "SELECT total FROM orders"},
-    
-    {"nl": "Users from New York", "sql": "SELECT * FROM users WHERE city = 'New York'"},
-    {"nl": "Users older than 25", "sql": "SELECT * FROM users WHERE age > 25"},
-    {"nl": "Users younger than 30", "sql": "SELECT * FROM users WHERE age < 30"},
-    
-    {"nl": "Products sorted by name", "sql": "SELECT * FROM products ORDER BY name ASC"},
-    {"nl": "Users sorted by age descending", "sql": "SELECT * FROM users ORDER BY age DESC"},
-    {"nl": "Orders sorted by date", "sql": "SELECT * FROM orders ORDER BY created_at DESC"},
-    
-    {"nl": "Average product price", "sql": "SELECT AVG(price) FROM products"},
-    {"nl": "Maximum product price", "sql": "SELECT MAX(price) FROM products"},
-    {"nl": "Minimum product price", "sql": "SELECT MIN(price) FROM products"},
-    {"nl": "Sum of order totals", "sql": "SELECT SUM(total) FROM orders"},
-    
-    {"nl": "Users grouped by city", "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"},
-    {"nl": "Products grouped by category", "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"},
-    
-    {"nl": "Users with gmail", "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com'"},
-    {"nl": "Products containing phone", "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"},
-    
-    {"nl": "Join users and orders", "sql": "SELECT * FROM users JOIN orders ON users.id = orders.user_id"},
-    {"nl": "Users with their orders", "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"},
-    
-    {"nl": "Delete old orders", "sql": "DELETE FROM orders WHERE created_at < '2020-01-01'"},
-    {"nl": "Update product price", "sql": "UPDATE products SET price = 100 WHERE id = 1"},
-    {"nl": "Insert new user", "sql": "INSERT INTO users (name, email) VALUES ('John', 'john@example.com')"}
+    {
+      "nl": "Count all products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users from Chicago",
+      "sql": "SELECT * FROM users WHERE city = 'Chicago'"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Bob', 'bob@example.com')"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Show all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Show 16 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 16"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "List all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Sybil', 'sybil@example.com')"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Users from New York",
+      "sql": "SELECT * FROM users WHERE city = 'New York'"
+    },
+    {
+      "nl": "Products more expensive than 250",
+      "sql": "SELECT * FROM products WHERE price > 250"
+    },
+    {
+      "nl": "Users from Los Angeles",
+      "sql": "SELECT * FROM users WHERE city = 'Los Angeles'"
+    },
+    {
+      "nl": "Products in category Sports",
+      "sql": "SELECT * FROM products WHERE category = 'Sports'"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Display all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Eve', 'eve@example.com')"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Get top 38 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 38"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Users named Bob",
+      "sql": "SELECT * FROM users WHERE name = 'Bob'"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Users older than 23",
+      "sql": "SELECT * FROM users WHERE age > 23"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users from Denver",
+      "sql": "SELECT * FROM users WHERE city = 'Denver'"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products more expensive than 200",
+      "sql": "SELECT * FROM products WHERE price > 200"
+    },
+    {
+      "nl": "Products in category Toys",
+      "sql": "SELECT * FROM products WHERE category = 'Toys'"
+    },
+    {
+      "nl": "Show top 41 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 41"
+    },
+    {
+      "nl": "Products more than 500",
+      "sql": "SELECT * FROM products WHERE price > 500"
+    },
+    {
+      "nl": "Products more expensive than 300",
+      "sql": "SELECT * FROM products WHERE price > 300"
+    },
+    {
+      "nl": "Users from Miami",
+      "sql": "SELECT * FROM users WHERE city = 'Miami'"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users from San Francisco",
+      "sql": "SELECT * FROM users WHERE city = 'San Francisco'"
+    },
+    {
+      "nl": "Products in category Garden",
+      "sql": "SELECT * FROM products WHERE category = 'Garden'"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Products in category Grocery",
+      "sql": "SELECT * FROM products WHERE category = 'Grocery'"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Products less than 150",
+      "sql": "SELECT * FROM products WHERE price < 150"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Ivan', 'ivan@example.com')"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Show all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Products cheaper than 75",
+      "sql": "SELECT * FROM products WHERE price < 75"
+    },
+    {
+      "nl": "Get top 27 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 27"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 150 WHERE id = 65"
+    },
+    {
+      "nl": "Show all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Ivan', 'ivan@example.com')"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Products more than 300",
+      "sql": "SELECT * FROM products WHERE price > 300"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2019-01-01'"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2018-01-01'"
+    },
+    {
+      "nl": "Users younger than 58",
+      "sql": "SELECT * FROM users WHERE age < 58"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Find user Charlie",
+      "sql": "SELECT * FROM users WHERE name = 'Charlie'"
+    },
+    {
+      "nl": "Products more than 500",
+      "sql": "SELECT * FROM products WHERE price > 500"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users younger than 33",
+      "sql": "SELECT * FROM users WHERE age < 33"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Show top 8 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 8"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Charlie', 'charlie@example.com')"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products more expensive than 150",
+      "sql": "SELECT * FROM products WHERE price > 150"
+    },
+    {
+      "nl": "Products in category Automotive",
+      "sql": "SELECT * FROM products WHERE category = 'Automotive'"
+    },
+    {
+      "nl": "Find user Judy",
+      "sql": "SELECT * FROM users WHERE name = 'Judy'"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 25 WHERE id = 116"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Show 24 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 24"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Show all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Get top 5 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 5"
+    },
+    {
+      "nl": "Show 35 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 35"
+    },
+    {
+      "nl": "Users from Denver",
+      "sql": "SELECT * FROM users WHERE city = 'Denver'"
+    },
+    {
+      "nl": "Products in category Automotive",
+      "sql": "SELECT * FROM products WHERE category = 'Automotive'"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users named Eve",
+      "sql": "SELECT * FROM users WHERE name = 'Eve'"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Show all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Display all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Find user Grace",
+      "sql": "SELECT * FROM users WHERE name = 'Grace'"
+    },
+    {
+      "nl": "How many orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Products between 80 and 200",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 80 AND 200"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Show top 31 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 31"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('John', 'john@example.com')"
+    },
+    {
+      "nl": "Show 18 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 18"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Products in category Beauty",
+      "sql": "SELECT * FROM products WHERE category = 'Beauty'"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Display all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Users older than 45",
+      "sql": "SELECT * FROM users WHERE age > 45"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Users named Judy",
+      "sql": "SELECT * FROM users WHERE name = 'Judy'"
+    },
+    {
+      "nl": "Show all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Show all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Products more than 25",
+      "sql": "SELECT * FROM products WHERE price > 25"
+    },
+    {
+      "nl": "Products between 30 and 400",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 30 AND 400"
+    },
+    {
+      "nl": "Show 46 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 46"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Total number of products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Show all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 75 WHERE id = 81"
+    },
+    {
+      "nl": "Products in category Sports",
+      "sql": "SELECT * FROM products WHERE category = 'Sports'"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Users younger than 47",
+      "sql": "SELECT * FROM users WHERE age < 47"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Get top 3 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 3"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Grace', 'grace@example.com')"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2020-01-01'"
+    },
+    {
+      "nl": "How many orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Get top 18 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 18"
+    },
+    {
+      "nl": "Users older than 28",
+      "sql": "SELECT * FROM users WHERE age > 28"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Judy', 'judy@example.com')"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 200 WHERE id = 3"
+    },
+    {
+      "nl": "Users younger than 60",
+      "sql": "SELECT * FROM users WHERE age < 60"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Count all products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Products cheaper than 150",
+      "sql": "SELECT * FROM products WHERE price < 150"
+    },
+    {
+      "nl": "Products in category Sports",
+      "sql": "SELECT * FROM products WHERE category = 'Sports'"
+    },
+    {
+      "nl": "Products in category Toys",
+      "sql": "SELECT * FROM products WHERE category = 'Toys'"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2021-01-01'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Show all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Users from New York",
+      "sql": "SELECT * FROM users WHERE city = 'New York'"
+    },
+    {
+      "nl": "Get all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Products more expensive than 300",
+      "sql": "SELECT * FROM products WHERE price > 300"
+    },
+    {
+      "nl": "Show all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Show 47 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 47"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Alice', 'alice@example.com')"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products less than 250",
+      "sql": "SELECT * FROM products WHERE price < 250"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Products in category Home",
+      "sql": "SELECT * FROM products WHERE category = 'Home'"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Products less than 100",
+      "sql": "SELECT * FROM products WHERE price < 100"
+    },
+    {
+      "nl": "Products between 20 and 150",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 20 AND 150"
+    },
+    {
+      "nl": "Products between 100 and 150",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 100 AND 150"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Users from Los Angeles",
+      "sql": "SELECT * FROM users WHERE city = 'Los Angeles'"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Display all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Find user Trent",
+      "sql": "SELECT * FROM users WHERE name = 'Trent'"
+    },
+    {
+      "nl": "Users younger than 70",
+      "sql": "SELECT * FROM users WHERE age < 70"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "List all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Users from San Francisco",
+      "sql": "SELECT * FROM users WHERE city = 'San Francisco'"
+    },
+    {
+      "nl": "Users from Seattle",
+      "sql": "SELECT * FROM users WHERE city = 'Seattle'"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2021-01-01'"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Mallory', 'mallory@example.com')"
+    },
+    {
+      "nl": "Show all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Products between 80 and 400",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 80 AND 400"
+    },
+    {
+      "nl": "Show all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2018-01-01'"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users named Ivan",
+      "sql": "SELECT * FROM users WHERE name = 'Ivan'"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "List all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Get top 45 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 45"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Total number of products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users younger than 50",
+      "sql": "SELECT * FROM users WHERE age < 50"
+    },
+    {
+      "nl": "Users younger than 60",
+      "sql": "SELECT * FROM users WHERE age < 60"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users older than 53",
+      "sql": "SELECT * FROM users WHERE age > 53"
+    },
+    {
+      "nl": "Count all orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Products between 400 and 500",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 400 AND 500"
+    },
+    {
+      "nl": "Users younger than 43",
+      "sql": "SELECT * FROM users WHERE age < 43"
+    },
+    {
+      "nl": "Get all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Users older than 31",
+      "sql": "SELECT * FROM users WHERE age > 31"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Products in category Automotive",
+      "sql": "SELECT * FROM products WHERE category = 'Automotive'"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products more expensive than 50",
+      "sql": "SELECT * FROM products WHERE price > 50"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2023-01-01'"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Show top 18 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 18"
+    },
+    {
+      "nl": "Users younger than 32",
+      "sql": "SELECT * FROM users WHERE age < 32"
+    },
+    {
+      "nl": "Users named Charlie",
+      "sql": "SELECT * FROM users WHERE name = 'Charlie'"
+    },
+    {
+      "nl": "List all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Get top 32 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 32"
+    },
+    {
+      "nl": "Find user Peggy",
+      "sql": "SELECT * FROM users WHERE name = 'Peggy'"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Products less than 25",
+      "sql": "SELECT * FROM products WHERE price < 25"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Products between 200 and 300",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 200 AND 300"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "How many orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 150 WHERE id = 144"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2021-01-01'"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Products more expensive than 300",
+      "sql": "SELECT * FROM products WHERE price > 300"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Users from Miami",
+      "sql": "SELECT * FROM users WHERE city = 'Miami'"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Users from Denver",
+      "sql": "SELECT * FROM users WHERE city = 'Denver'"
+    },
+    {
+      "nl": "Get top 48 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 48"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Users from Seattle",
+      "sql": "SELECT * FROM users WHERE city = 'Seattle'"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Bob', 'bob@example.com')"
+    },
+    {
+      "nl": "Count all orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Products less than 100",
+      "sql": "SELECT * FROM products WHERE price < 100"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Trent', 'trent@example.com')"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Display all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Get all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Users younger than 66",
+      "sql": "SELECT * FROM users WHERE age < 66"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Niaj', 'niaj@example.com')"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Users from Austin",
+      "sql": "SELECT * FROM users WHERE city = 'Austin'"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Products more than 300",
+      "sql": "SELECT * FROM products WHERE price > 300"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('John', 'john@example.com')"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Show all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "How many orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Products between 20 and 80",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 20 AND 80"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Products in category Grocery",
+      "sql": "SELECT * FROM products WHERE category = 'Grocery'"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users from Austin",
+      "sql": "SELECT * FROM users WHERE city = 'Austin'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Show 33 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 33"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Alice', 'alice@example.com')"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Show 44 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 44"
+    },
+    {
+      "nl": "List all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Users named John",
+      "sql": "SELECT * FROM users WHERE name = 'John'"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "How many orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Total number of products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Products in category Grocery",
+      "sql": "SELECT * FROM products WHERE category = 'Grocery'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products more than 1000",
+      "sql": "SELECT * FROM products WHERE price > 1000"
+    },
+    {
+      "nl": "Products more than 150",
+      "sql": "SELECT * FROM products WHERE price > 150"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users named Bob",
+      "sql": "SELECT * FROM users WHERE name = 'Bob'"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users younger than 61",
+      "sql": "SELECT * FROM users WHERE age < 61"
+    },
+    {
+      "nl": "Total number of products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Sybil', 'sybil@example.com')"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Show top 35 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 35"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Display all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Products less than 250",
+      "sql": "SELECT * FROM products WHERE price < 250"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 75 WHERE id = 167"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Victor', 'victor@example.com')"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Users from Seattle",
+      "sql": "SELECT * FROM users WHERE city = 'Seattle'"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Get top 20 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 20"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Display all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Products between 50 and 200",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 50 AND 200"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Users from Dallas",
+      "sql": "SELECT * FROM users WHERE city = 'Dallas'"
+    },
+    {
+      "nl": "Users from Miami",
+      "sql": "SELECT * FROM users WHERE city = 'Miami'"
+    },
+    {
+      "nl": "List all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Show top 18 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 18"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Show all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Users older than 32",
+      "sql": "SELECT * FROM users WHERE age > 32"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Users younger than 60",
+      "sql": "SELECT * FROM users WHERE age < 60"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 100 WHERE id = 89"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Users from Boston",
+      "sql": "SELECT * FROM users WHERE city = 'Boston'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Total number of products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users named Mallory",
+      "sql": "SELECT * FROM users WHERE name = 'Mallory'"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Dave', 'dave@example.com')"
+    },
+    {
+      "nl": "Find user Grace",
+      "sql": "SELECT * FROM users WHERE name = 'Grace'"
+    },
+    {
+      "nl": "Users from Dallas",
+      "sql": "SELECT * FROM users WHERE city = 'Dallas'"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 75 WHERE id = 153"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users older than 32",
+      "sql": "SELECT * FROM users WHERE age > 32"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products between 20 and 80",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 20 AND 80"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Charlie', 'charlie@example.com')"
+    },
+    {
+      "nl": "Users from New York",
+      "sql": "SELECT * FROM users WHERE city = 'New York'"
+    },
+    {
+      "nl": "Get all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Get all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Products between 20 and 80",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 20 AND 80"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Count all products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Products cheaper than 1000",
+      "sql": "SELECT * FROM products WHERE price < 1000"
+    },
+    {
+      "nl": "Show 18 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 18"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 100 WHERE id = 98"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Users younger than 55",
+      "sql": "SELECT * FROM users WHERE age < 55"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Users younger than 54",
+      "sql": "SELECT * FROM users WHERE age < 54"
+    },
+    {
+      "nl": "Show all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Products in category Home",
+      "sql": "SELECT * FROM products WHERE category = 'Home'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Show 13 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 13"
+    },
+    {
+      "nl": "Products between 30 and 300",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 30 AND 300"
+    },
+    {
+      "nl": "Products more expensive than 25",
+      "sql": "SELECT * FROM products WHERE price > 25"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Users older than 20",
+      "sql": "SELECT * FROM users WHERE age > 20"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Users older than 63",
+      "sql": "SELECT * FROM users WHERE age > 63"
+    },
+    {
+      "nl": "Users older than 62",
+      "sql": "SELECT * FROM users WHERE age > 62"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Show 46 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 46"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Users named Sybil",
+      "sql": "SELECT * FROM users WHERE name = 'Sybil'"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Heidi', 'heidi@example.com')"
+    },
+    {
+      "nl": "Products less than 150",
+      "sql": "SELECT * FROM products WHERE price < 150"
+    },
+    {
+      "nl": "Show 6 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 6"
+    },
+    {
+      "nl": "Users younger than 56",
+      "sql": "SELECT * FROM users WHERE age < 56"
+    },
+    {
+      "nl": "Users older than 46",
+      "sql": "SELECT * FROM users WHERE age > 46"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users younger than 62",
+      "sql": "SELECT * FROM users WHERE age < 62"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users from Miami",
+      "sql": "SELECT * FROM users WHERE city = 'Miami'"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Victor', 'victor@example.com')"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Show 41 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 41"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Show all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "List all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 100 WHERE id = 167"
+    },
+    {
+      "nl": "Users from Los Angeles",
+      "sql": "SELECT * FROM users WHERE city = 'Los Angeles'"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Display all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Get top 23 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 23"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2018-01-01'"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Trent', 'trent@example.com')"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 150 WHERE id = 93"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Users from Miami",
+      "sql": "SELECT * FROM users WHERE city = 'Miami'"
+    },
+    {
+      "nl": "How many orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "List all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Products more than 150",
+      "sql": "SELECT * FROM products WHERE price > 150"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Show 17 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 17"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Total number of products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Products cheaper than 300",
+      "sql": "SELECT * FROM products WHERE price < 300"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2023-01-01'"
+    },
+    {
+      "nl": "Users from Austin",
+      "sql": "SELECT * FROM users WHERE city = 'Austin'"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Products less than 250",
+      "sql": "SELECT * FROM products WHERE price < 250"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2023-01-01'"
+    },
+    {
+      "nl": "Count all orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Users from Austin",
+      "sql": "SELECT * FROM users WHERE city = 'Austin'"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2020-01-01'"
+    },
+    {
+      "nl": "Get all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Users younger than 55",
+      "sql": "SELECT * FROM users WHERE age < 55"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Victor', 'victor@example.com')"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Peggy', 'peggy@example.com')"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Find user Heidi",
+      "sql": "SELECT * FROM users WHERE name = 'Heidi'"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Products less than 300",
+      "sql": "SELECT * FROM products WHERE price < 300"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "List all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Products cheaper than 50",
+      "sql": "SELECT * FROM products WHERE price < 50"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Show top 24 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 24"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Peggy', 'peggy@example.com')"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Show top 18 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 18"
+    },
+    {
+      "nl": "Users older than 32",
+      "sql": "SELECT * FROM users WHERE age > 32"
+    },
+    {
+      "nl": "Show 30 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 30"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Products more than 150",
+      "sql": "SELECT * FROM products WHERE price > 150"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Get all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Products cheaper than 100",
+      "sql": "SELECT * FROM products WHERE price < 100"
+    },
+    {
+      "nl": "Products between 40 and 500",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 40 AND 500"
+    },
+    {
+      "nl": "Get top 42 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 42"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Display all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Users older than 61",
+      "sql": "SELECT * FROM users WHERE age > 61"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Dave', 'dave@example.com')"
+    },
+    {
+      "nl": "Get top 31 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 31"
+    },
+    {
+      "nl": "Users younger than 58",
+      "sql": "SELECT * FROM users WHERE age < 58"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Users younger than 30",
+      "sql": "SELECT * FROM users WHERE age < 30"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Users older than 62",
+      "sql": "SELECT * FROM users WHERE age > 62"
+    },
+    {
+      "nl": "Users older than 19",
+      "sql": "SELECT * FROM users WHERE age > 19"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users from New York",
+      "sql": "SELECT * FROM users WHERE city = 'New York'"
+    },
+    {
+      "nl": "Display all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Users older than 67",
+      "sql": "SELECT * FROM users WHERE age > 67"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Find user Uma",
+      "sql": "SELECT * FROM users WHERE name = 'Uma'"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Count all orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Users older than 38",
+      "sql": "SELECT * FROM users WHERE age > 38"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Products between 40 and 50",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 40 AND 50"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Oscar', 'oscar@example.com')"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 75 WHERE id = 129"
+    },
+    {
+      "nl": "Products more expensive than 150",
+      "sql": "SELECT * FROM products WHERE price > 150"
+    },
+    {
+      "nl": "Users older than 65",
+      "sql": "SELECT * FROM users WHERE age > 65"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Show 12 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 12"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Show 28 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 28"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Eve', 'eve@example.com')"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Get top 43 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 43"
+    },
+    {
+      "nl": "Users younger than 59",
+      "sql": "SELECT * FROM users WHERE age < 59"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Count all products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Show all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Users younger than 49",
+      "sql": "SELECT * FROM users WHERE age < 49"
+    },
+    {
+      "nl": "Count all products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Charlie', 'charlie@example.com')"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Sybil', 'sybil@example.com')"
+    },
+    {
+      "nl": "Products less than 250",
+      "sql": "SELECT * FROM products WHERE price < 250"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Users from New York",
+      "sql": "SELECT * FROM users WHERE city = 'New York'"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products in category Grocery",
+      "sql": "SELECT * FROM products WHERE category = 'Grocery'"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Yvonne', 'yvonne@example.com')"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Display all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Users from Chicago",
+      "sql": "SELECT * FROM users WHERE city = 'Chicago'"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Show 45 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 45"
+    },
+    {
+      "nl": "Show all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Products in category Books",
+      "sql": "SELECT * FROM products WHERE category = 'Books'"
+    },
+    {
+      "nl": "Products in category Garden",
+      "sql": "SELECT * FROM products WHERE category = 'Garden'"
+    },
+    {
+      "nl": "Products in category Home",
+      "sql": "SELECT * FROM products WHERE category = 'Home'"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Products less than 1000",
+      "sql": "SELECT * FROM products WHERE price < 1000"
+    },
+    {
+      "nl": "Users from Los Angeles",
+      "sql": "SELECT * FROM users WHERE city = 'Los Angeles'"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Products between 20 and 30",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 20 AND 30"
+    },
+    {
+      "nl": "Count all orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "List all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 200 WHERE id = 30"
+    },
+    {
+      "nl": "Get top 33 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 33"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2019-01-01'"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Show all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Get top 8 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 8"
+    },
+    {
+      "nl": "Products less than 50",
+      "sql": "SELECT * FROM products WHERE price < 50"
+    },
+    {
+      "nl": "Users from Dallas",
+      "sql": "SELECT * FROM users WHERE city = 'Dallas'"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 100 WHERE id = 76"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Total number of products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Products in category Beauty",
+      "sql": "SELECT * FROM products WHERE category = 'Beauty'"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products less than 300",
+      "sql": "SELECT * FROM products WHERE price < 300"
+    },
+    {
+      "nl": "Show 8 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 8"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Get all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Get all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Users younger than 40",
+      "sql": "SELECT * FROM users WHERE age < 40"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2019-01-01'"
+    },
+    {
+      "nl": "Products less than 300",
+      "sql": "SELECT * FROM products WHERE price < 300"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "List all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Users from Boston",
+      "sql": "SELECT * FROM users WHERE city = 'Boston'"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "List all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Products cheaper than 1000",
+      "sql": "SELECT * FROM products WHERE price < 1000"
+    },
+    {
+      "nl": "Show top 12 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 12"
+    },
+    {
+      "nl": "Show all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 100 WHERE id = 56"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Products more expensive than 200",
+      "sql": "SELECT * FROM products WHERE price > 200"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Show 6 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 6"
+    },
+    {
+      "nl": "Products more than 1000",
+      "sql": "SELECT * FROM products WHERE price > 1000"
+    },
+    {
+      "nl": "Get top 20 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 20"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users from Chicago",
+      "sql": "SELECT * FROM users WHERE city = 'Chicago'"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2018-01-01'"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "How many products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "List all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Show all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Products in category Toys",
+      "sql": "SELECT * FROM products WHERE category = 'Toys'"
+    },
+    {
+      "nl": "Products in category Clothing",
+      "sql": "SELECT * FROM products WHERE category = 'Clothing'"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Users older than 38",
+      "sql": "SELECT * FROM users WHERE age > 38"
+    },
+    {
+      "nl": "Count all products",
+      "sql": "SELECT COUNT(*) FROM products"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Products between 40 and 150",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 40 AND 150"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Heidi', 'heidi@example.com')"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Show top 28 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 28"
+    },
+    {
+      "nl": "Display all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Display all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Show top 23 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 23"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users older than 25",
+      "sql": "SELECT * FROM users WHERE age > 25"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Products more expensive than 1000",
+      "sql": "SELECT * FROM products WHERE price > 1000"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Show 30 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 30"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 100 WHERE id = 21"
+    },
+    {
+      "nl": "Users younger than 65",
+      "sql": "SELECT * FROM users WHERE age < 65"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Products more than 50",
+      "sql": "SELECT * FROM products WHERE price > 50"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 50 WHERE id = 131"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Products less than 100",
+      "sql": "SELECT * FROM products WHERE price < 100"
+    },
+    {
+      "nl": "Products less than 150",
+      "sql": "SELECT * FROM products WHERE price < 150"
+    },
+    {
+      "nl": "Products between 40 and 400",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 40 AND 400"
+    },
+    {
+      "nl": "Show top 14 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 14"
+    },
+    {
+      "nl": "Users with their orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Products less than 300",
+      "sql": "SELECT * FROM products WHERE price < 300"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Users younger than 68",
+      "sql": "SELECT * FROM users WHERE age < 68"
+    },
+    {
+      "nl": "Users from Dallas",
+      "sql": "SELECT * FROM users WHERE city = 'Dallas'"
+    },
+    {
+      "nl": "Get all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2018-01-01'"
+    },
+    {
+      "nl": "Users younger than 47",
+      "sql": "SELECT * FROM users WHERE age < 47"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Show all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Users older than 22",
+      "sql": "SELECT * FROM users WHERE age > 22"
+    },
+    {
+      "nl": "Show top 42 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 42"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2021-01-01'"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Display all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Find user Mallory",
+      "sql": "SELECT * FROM users WHERE name = 'Mallory'"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2019-01-01'"
+    },
+    {
+      "nl": "Display all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "How many users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Show top 35 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 35"
+    },
+    {
+      "nl": "Products between 20 and 50",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 20 AND 50"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 150 WHERE id = 134"
+    },
+    {
+      "nl": "Products more expensive than 200",
+      "sql": "SELECT * FROM products WHERE price > 200"
+    },
+    {
+      "nl": "Users older than 42",
+      "sql": "SELECT * FROM users WHERE age > 42"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Get all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Show 24 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 24"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users older than 34",
+      "sql": "SELECT * FROM users WHERE age > 34"
+    },
+    {
+      "nl": "Products less than 200",
+      "sql": "SELECT * FROM products WHERE price < 200"
+    },
+    {
+      "nl": "Products cheaper than 200",
+      "sql": "SELECT * FROM products WHERE price < 200"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Show top 22 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 22"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 200 WHERE id = 24"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2020-01-01'"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Users younger than 29",
+      "sql": "SELECT * FROM users WHERE age < 29"
+    },
+    {
+      "nl": "Products in category Sports",
+      "sql": "SELECT * FROM products WHERE category = 'Sports'"
+    },
+    {
+      "nl": "Join users and orders",
+      "sql": "SELECT users.name, orders.total FROM users LEFT JOIN orders ON users.id = orders.user_id"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Count all orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Show 21 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 21"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 200 WHERE id = 10"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Products less than 75",
+      "sql": "SELECT * FROM products WHERE price < 75"
+    },
+    {
+      "nl": "Products more than 300",
+      "sql": "SELECT * FROM products WHERE price > 300"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Users older than 66",
+      "sql": "SELECT * FROM users WHERE age > 66"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Show name and email from users",
+      "sql": "SELECT name, email FROM users"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Heidi', 'heidi@example.com')"
+    },
+    {
+      "nl": "Users younger than 69",
+      "sql": "SELECT * FROM users WHERE age < 69"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Find user Oscar",
+      "sql": "SELECT * FROM users WHERE name = 'Oscar'"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Users older than 67",
+      "sql": "SELECT * FROM users WHERE age > 67"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Products more than 100",
+      "sql": "SELECT * FROM products WHERE price > 100"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Display all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 75 WHERE id = 32"
+    },
+    {
+      "nl": "Get top 13 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 13"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2019-01-01'"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Get top 17 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 17"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Display all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Display all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2020-01-01'"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Show 26 most expensive products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 26"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Products less than 75",
+      "sql": "SELECT * FROM products WHERE price < 75"
+    },
+    {
+      "nl": "Users older than 48",
+      "sql": "SELECT * FROM users WHERE age > 48"
+    },
+    {
+      "nl": "Total number of orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Show all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Products in category Clothing",
+      "sql": "SELECT * FROM products WHERE category = 'Clothing'"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 25 WHERE id = 109"
+    },
+    {
+      "nl": "Users older than 33",
+      "sql": "SELECT * FROM users WHERE age > 33"
+    },
+    {
+      "nl": "Users younger than 25",
+      "sql": "SELECT * FROM users WHERE age < 25"
+    },
+    {
+      "nl": "List all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Get top 10 products by price ASC",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 10"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('John', 'john@example.com')"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Products cheaper than 150",
+      "sql": "SELECT * FROM products WHERE price < 150"
+    },
+    {
+      "nl": "Get all users",
+      "sql": "SELECT * FROM users"
+    },
+    {
+      "nl": "Show name and price from products",
+      "sql": "SELECT name, price FROM products"
+    },
+    {
+      "nl": "Sum order total",
+      "sql": "SELECT SUM(total) FROM orders"
+    },
+    {
+      "nl": "Products between 30 and 500",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 30 AND 500"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 25 WHERE id = 93"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 150 WHERE id = 140"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2022-01-01'"
+    },
+    {
+      "nl": "Display all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Display all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "Get all products",
+      "sql": "SELECT * FROM products"
+    },
+    {
+      "nl": "Show 25 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 25"
+    },
+    {
+      "nl": "Total number of users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Count all orders",
+      "sql": "SELECT COUNT(*) FROM orders"
+    },
+    {
+      "nl": "Orders sorted by created_at descending",
+      "sql": "SELECT * FROM orders ORDER BY created_at DESC"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Mallory', 'mallory@example.com')"
+    },
+    {
+      "nl": "Products between 200 and 500",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 200 AND 500"
+    },
+    {
+      "nl": "Products with name containing phone",
+      "sql": "SELECT * FROM products WHERE name LIKE '%phone%'"
+    },
+    {
+      "nl": "Products between 30 and 40",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 30 AND 40"
+    },
+    {
+      "nl": "Users with email containing gmail.com",
+      "sql": "SELECT * FROM users WHERE email LIKE '%gmail.com%'"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Users named Alice",
+      "sql": "SELECT * FROM users WHERE name = 'Alice'"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Users younger than 50",
+      "sql": "SELECT * FROM users WHERE age < 50"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Insert new user",
+      "sql": "INSERT INTO users (name, email) VALUES ('Victor', 'victor@example.com')"
+    },
+    {
+      "nl": "Show total from orders",
+      "sql": "SELECT total FROM orders"
+    },
+    {
+      "nl": "List all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Users older than 40",
+      "sql": "SELECT * FROM users WHERE age > 40"
+    },
+    {
+      "nl": "Get all categories",
+      "sql": "SELECT * FROM categories"
+    },
+    {
+      "nl": "Users from San Francisco",
+      "sql": "SELECT * FROM users WHERE city = 'San Francisco'"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "Users sorted by age descending",
+      "sql": "SELECT * FROM users ORDER BY age DESC"
+    },
+    {
+      "nl": "Products between 200 and 500",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 200 AND 500"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 250 WHERE id = 69"
+    },
+    {
+      "nl": "Get top 49 products by price DESC",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 49"
+    },
+    {
+      "nl": "Show top 30 products",
+      "sql": "SELECT * FROM products ORDER BY price DESC LIMIT 30"
+    },
+    {
+      "nl": "Products between 80 and 300",
+      "sql": "SELECT * FROM products WHERE price BETWEEN 80 AND 300"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Count all users",
+      "sql": "SELECT COUNT(*) FROM users"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    },
+    {
+      "nl": "Users older than 37",
+      "sql": "SELECT * FROM users WHERE age > 37"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Products more expensive than 300",
+      "sql": "SELECT * FROM products WHERE price > 300"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Get all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Users grouped by city",
+      "sql": "SELECT city, COUNT(*) FROM users GROUP BY city"
+    },
+    {
+      "nl": "Users from New York",
+      "sql": "SELECT * FROM users WHERE city = 'New York'"
+    },
+    {
+      "nl": "Show top 45 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 45"
+    },
+    {
+      "nl": "Min product price",
+      "sql": "SELECT MIN(price) FROM products"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Delete old orders",
+      "sql": "DELETE FROM orders WHERE created_at < '2023-01-01'"
+    },
+    {
+      "nl": "Products more than 25",
+      "sql": "SELECT * FROM products WHERE price > 25"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "List all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Show top 18 products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 18"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Max product price",
+      "sql": "SELECT MAX(price) FROM products"
+    },
+    {
+      "nl": "List all orders",
+      "sql": "SELECT * FROM orders"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Avg product price",
+      "sql": "SELECT AVG(price) FROM products"
+    },
+    {
+      "nl": "Products grouped by category",
+      "sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+    },
+    {
+      "nl": "Show 39 cheapest products",
+      "sql": "SELECT * FROM products ORDER BY price ASC LIMIT 39"
+    },
+    {
+      "nl": "Update product price",
+      "sql": "UPDATE products SET price = 100 WHERE id = 94"
+    },
+    {
+      "nl": "Products sorted by name",
+      "sql": "SELECT * FROM products ORDER BY name ASC"
+    }
   ]
 }

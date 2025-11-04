@@ -133,5 +133,56 @@ set_target_properties(train_model PROPERTIES
     INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
 )
 
+# Test model executable
+add_executable(test_model test_model.cpp)
+target_include_directories(test_model PRIVATE ${CMAKE_SOURCE_DIR}/src)
+#target_link_libraries(test_model PRIVATE ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
+
+if(TARGET Torch::Torch)
+    target_link_libraries(test_model PRIVATE Torch::Torch pthread)
+else()
+    target_link_libraries(test_model PRIVATE "${TORCH_LIBRARIES}" pthread)
+endif()
+
+target_compile_features(test_model PRIVATE cxx_std_17)
+set_target_properties(test_model PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set_target_properties(test_model PROPERTIES
+    BUILD_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
+    INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
+)
+
+# Training executable in training_data directory
+add_executable(train_model_data
+    training_data/train_model.cpp
+    src/ml/ModelTrainer.cpp
+    src/ml/Seq2SeqModel.cpp
+    src/ml/Vocabulary.cpp
+    src/utils/Logger.cpp
+)
+
+target_include_directories(train_model_data PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+if(nlohmann_json_FOUND)
+    if(TARGET Torch::Torch)
+        target_link_libraries(train_model_data PRIVATE nlohmann_json::nlohmann_json Torch::Torch pthread)
+    else()
+        target_link_libraries(train_model_data PRIVATE nlohmann_json::nlohmann_json "${TORCH_LIBRARIES}" pthread)
+    endif()
+else()
+    if(TARGET Torch::Torch)
+        target_link_libraries(train_model_data PRIVATE Torch::Torch pthread)
+    else()
+        target_link_libraries(train_model_data PRIVATE "${TORCH_LIBRARIES}" pthread)
+    endif()
+endif()
+
+target_compile_features(train_model_data PRIVATE cxx_std_17)
+set_property(TARGET train_model_data PROPERTY CXX_STANDARD 17)
+set_target_properties(train_model_data PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set_target_properties(train_model_data PROPERTIES
+    BUILD_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
+    INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
+)
+
 # Установка
-install(TARGETS ${PROJECT_NAME} train_model DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} train_model test_model train_model_data DESTINATION bin)

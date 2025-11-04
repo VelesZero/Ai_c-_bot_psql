@@ -43,9 +43,10 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> DecoderImpl::forward(
     auto prediction = fc_->forward(output.squeeze(0));
     
     auto hidden_tuple = std::get<1>(lstm_out);
+    // Keep hidden and cell shapes as (num_layers, batch, hidden_dim)
     return std::make_tuple(prediction, 
-                          std::get<0>(hidden_tuple).squeeze(0), 
-                          std::get<1>(hidden_tuple).squeeze(0));
+                          std::get<0>(hidden_tuple), 
+                          std::get<1>(hidden_tuple));
 }
 
 Seq2SeqModel::Seq2SeqModel(int input_vocab_size, int output_vocab_size, 
@@ -62,9 +63,13 @@ Seq2SeqModel::Seq2SeqModel(int input_vocab_size, int output_vocab_size,
 }
 
 torch::Tensor Seq2SeqModel::forward(torch::Tensor src, torch::Tensor trg) {
-    int batch_size = trg.size(1);
-    int trg_len = trg.size(0);
-    int trg_vocab_size = decoder_->parameters()[2].size(0);
+    // Ensure tensors are on the same device as the model
+    src = src.to(device_);
+    trg = trg.to(device_);
+
+    int batch_size = static_cast<int>(trg.size(1));
+    int trg_len = static_cast<int>(trg.size(0));
+    int trg_vocab_size = decoder_->output_vocab_size();
     
     auto outputs = torch::zeros({trg_len, batch_size, trg_vocab_size}).to(device_);
     

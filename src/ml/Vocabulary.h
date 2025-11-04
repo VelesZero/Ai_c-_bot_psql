@@ -16,6 +16,8 @@ public:
     Vocabulary();
     
     void addWord(const std::string& word);
+    // Add all tokens from a raw sentence into the vocabulary
+    void addSentence(const std::string& text);
     int getIndex(const std::string& word) const;
     std::string getWord(int index) const;
     
