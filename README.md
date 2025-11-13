@@ -60,10 +60,63 @@ cmake --build /home/andrew/Projects/Ai_c-_bot_psql/build -j
 /home/andrew/Projects/Ai_c-_bot_psql/build/bin/train_model_data 0 0.001 --resume
 ```
 
+## Настройка базы данных
+
+Перед запуском основного приложения необходимо настроить базу данных PostgreSQL.
+
+### Автоматическая настройка (рекомендуется)
+
+```bash
+./setup_database.sh
+```
+
+Скрипт автоматически:
+- Создаст пользователя `ai_user` с паролем `123`
+- Создаст базу данных `ai_db`
+- Инициализирует схему и заполнит тестовыми данными
+
+**Требуются права sudo** для создания пользователя и БД.
+
+### Ручная настройка
+
+Если нет прав sudo, выполните от имени пользователя postgres:
+
+```bash
+# 1. Создать пользователя
+sudo -u postgres psql -c "CREATE USER ai_user WITH PASSWORD '123';"
+
+# 2. Создать базу данных
+sudo -u postgres psql -c "CREATE DATABASE ai_db OWNER ai_user;"
+
+# 3. Инициализировать схему
+PGPASSWORD=123 psql -h localhost -U ai_user -d ai_db -f init_database.sql
+```
+
+### Проверка подключения
+
+```bash
+PGPASSWORD=123 psql -h localhost -U ai_user -d ai_db -c "SELECT COUNT(*) FROM users;"
+```
+
+Должно вернуть количество пользователей (8 по умолчанию).
+
 ## Запуск основного приложения
 
 ```bash
 /home/andrew/Projects/Ai_c-_bot_psql/build/bin/AIQueryAgent
+```
+
+После запуска вы сможете:
+- Использовать команду `query <текст>` для преобразования NL в SQL и выполнения
+- Использовать команду `sql <запрос>` для прямого выполнения SQL
+- Просматривать таблицы командой `tables`
+
+**Примеры:**
+```
+> query show all users
+> query count all products
+> query get 5 cheapest products
+> sql SELECT * FROM users LIMIT 3
 ```
 
 ## Быстрый тест окружения PyTorch C++
@@ -71,6 +124,51 @@ cmake --build /home/andrew/Projects/Ai_c-_bot_psql/build -j
 ```bash
 /home/andrew/Projects/Ai_c-_bot_psql/build/bin/test_model
 ```
+
+## Использование обученной модели (инференс)
+
+После обучения модель сохраняется в `models/seq2seq_model_*.pt`. Для использования последней обученной версии:
+
+### Через train_model (инференс без обучения)
+
+```bash
+# 0 эпох = только инференс, без обучения
+./build/bin/train_model 0 0.001 --resume
+```
+
+После загрузки модель покажет тестовые примеры.
+
+### Через основное приложение AIQueryAgent
+
+```bash
+./build/bin/AIQueryAgent
+```
+
+Затем в интерактивном режиме:
+```
+> query Show all users
+> query Count all products
+> query Get 5 cheapest products
+```
+
+**Важно:** Убедитесь, что в `src/config/default.conf` указан правильный путь к модели:
+```
+model_path=models/seq2seq_model
+```
+
+### Проверка наличия обученной модели
+
+Убедитесь, что файлы модели существуют:
+
+```bash
+ls -lh models/seq2seq_model_*.pt models/seq2seq_model_*.txt
+```
+
+Должны быть:
+- `models/seq2seq_model_encoder.pt` - веса энкодера
+- `models/seq2seq_model_decoder.pt` - веса декодера  
+- `models/seq2seq_model_nl_vocab.txt` - словарь NL
+- `models/seq2seq_model_sql_vocab.txt` - словарь SQL
 
 ## Подробные инструкции по обучению нейросети
 
