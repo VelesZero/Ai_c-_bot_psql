@@ -1,4 +1,5 @@
 #include "Seq2SeqModel.h"
+#include <iostream>
 
 EncoderImpl::EncoderImpl(int vocab_size, int embedding_dim, int hidden_dim)
     : hidden_dim_(hidden_dim) {
@@ -60,6 +61,9 @@ Seq2SeqModel::Seq2SeqModel(int input_vocab_size, int output_vocab_size,
         encoder_->to(device_);
         decoder_->to(device_);
     }
+
+    std::cout << "Seq2SeqModel using device: "
+              << (device_.is_cuda() ? "CUDA" : "CPU") << std::endl;
 }
 
 torch::Tensor Seq2SeqModel::forward(torch::Tensor src, torch::Tensor trg) {

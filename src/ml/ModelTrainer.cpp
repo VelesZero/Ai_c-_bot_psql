@@ -86,6 +86,8 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
     auto criterion = torch::nn::CrossEntropyLoss(
         torch::nn::CrossEntropyLossOptions().ignore_index(Vocabulary::PAD_TOKEN)
     );
+    // Ensure the loss computation happens on the same device as the model (CPU/GPU)
+    criterion->to(model_->device_);
     
     const int total_examples = dataset_.size();
     const int log_interval = std::max(1, total_examples / 50);  // Show ~50 progress steps per epoch
@@ -111,6 +113,8 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
             
             auto logits = outputs_slice.reshape({-1, outputs.size(2)});
             auto targets = trg_slice.reshape({-1});
+            // Move targets to the same device as logits/criterion (CPU/GPU)
+            targets = targets.to(model_->device_);
             
             auto loss = criterion(logits, targets);
             loss.backward();
