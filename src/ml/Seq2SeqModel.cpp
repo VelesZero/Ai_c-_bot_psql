@@ -1,6 +1,8 @@
 #include "Seq2SeqModel.h"
 #include <iostream>
 
+// начало Seq2Seq модуля 
+// Мой энкодер
 EncoderImpl::EncoderImpl(int vocab_size, int embedding_dim, int hidden_dim)
     : hidden_dim_(hidden_dim) {
     
@@ -18,6 +20,7 @@ std::tuple<torch::Tensor, torch::Tensor> EncoderImpl::forward(torch::Tensor inpu
     return std::make_tuple(std::get<0>(hidden_tuple), std::get<1>(hidden_tuple));
 }
 
+//мой декодер
 DecoderImpl::DecoderImpl(int vocab_size, int embedding_dim, int hidden_dim)
     : hidden_dim_(hidden_dim) {
     
@@ -38,7 +41,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> DecoderImpl::forward(
     
     // hidden and cell are expected to be of shape (num_layers, batch, hidden_dim)
     // Encoder already returns (1, batch, hidden_dim), so we pass them directly
-    auto lstm_out = lstm_->forward(embedded, std::make_tuple(hidden, cell));
+    auto lstm_out(lstm_->forward(embedded, std::make_tuple(hidden, cell)));
     
     auto output = std::get<0>(lstm_out);
     auto prediction = fc_->forward(output.squeeze(0));
@@ -61,10 +64,12 @@ Seq2SeqModel::Seq2SeqModel(int input_vocab_size, int output_vocab_size,
         encoder_->to(device_);
         decoder_->to(device_);
     }
-
+// в будущем будет вариант с использованием GPU 
     std::cout << "Seq2SeqModel using device: "
               << (device_.is_cuda() ? "CUDA" : "CPU") << std::endl;
 }
+
+//обработка Тензора входных данных
 
 torch::Tensor Seq2SeqModel::forward(torch::Tensor src, torch::Tensor trg) {
     // Ensure tensors are on the same device as the model
@@ -123,6 +128,8 @@ std::vector<int> Seq2SeqModel::predict(const std::vector<int>& input, int max_le
     return result;
 }
 
+//запук тренировки для энкодера и декодера
+
 void Seq2SeqModel::train() {
     encoder_->train();
     decoder_->train();
@@ -133,6 +140,8 @@ void Seq2SeqModel::eval() {
     decoder_->eval();
 }
 
+//возможность сохранения прогресса
+
 bool Seq2SeqModel::save(const std::string& path) {
     try {
         torch::save(encoder_, path + "_encoder.pt");
@@ -142,6 +151,8 @@ bool Seq2SeqModel::save(const std::string& path) {
         return false;
     }
 }
+
+// загрузка прогресса
 
 bool Seq2SeqModel::load(const std::string& path) {
     try {
