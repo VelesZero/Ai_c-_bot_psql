@@ -41,7 +41,8 @@ TORCH_MODULE(Decoder);
 class Seq2SeqModel {
 public:
     Seq2SeqModel(int input_vocab_size, int output_vocab_size, 
-                 int embedding_dim = 256, int hidden_dim = 512);
+                 int embedding_dim = 256, int hidden_dim = 512,
+                 torch::Device device = torch::kCPU);
     
     torch::Tensor forward(torch::Tensor src, torch::Tensor trg);
     std::vector<int> predict(const std::vector<int>& input, int max_length = 50);
@@ -51,6 +52,8 @@ public:
     
     bool save(const std::string& path);
     bool load(const std::string& path);
+
+    void to(torch::Device device);
     
     Encoder encoder_;
     Decoder decoder_;

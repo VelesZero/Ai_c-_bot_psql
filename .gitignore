@@ -30,3 +30,4 @@ libtorch/
 libtorch_bak_cu118/
 .cashe
 .cache/
+data_base/

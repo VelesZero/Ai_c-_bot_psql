@@ -8,10 +8,11 @@ int main(int argc, char** argv) {
 	
 	MLModelTrainer trainer;
 
-	// CLI: train_model_data [epochs] [lr] [--resume]
+	// CLI: train_model_data [epochs] [lr] [--resume] [--cpu|--cuda|--auto]
 	int epochs = 50;
 	float lr = 0.001f;
 	bool resume = false;
+	enum class DeviceMode { Auto, CPU, CUDA } device_mode = DeviceMode::Auto;
 	if (argc >= 2) {
 		epochs = std::stoi(argv[1]);
 	}
@@ -22,7 +23,25 @@ int main(int argc, char** argv) {
 		if (std::string(argv[i]) == "--resume") {
 			resume = true;
 		}
+		if (std::string(argv[i]) == "--cpu") {
+			device_mode = DeviceMode::CPU;
+		}
+		if (std::string(argv[i]) == "--cuda") {
+			device_mode = DeviceMode::CUDA;
+		}
+		if (std::string(argv[i]) == "--auto") {
+			device_mode = DeviceMode::Auto;
+		}
 	}
+
+	if (device_mode == DeviceMode::CPU) {
+		trainer.setDevice(torch::kCPU);
+	} else if (device_mode == DeviceMode::CUDA) {
+		trainer.setDevice(torch::kCUDA);
+	}
+
+	std::cout << "Training device: "
+			  << (trainer.device().is_cuda() ? "CUDA" : "CPU") << std::endl;
 
 	std::cout << "Loading dataset..." << std::endl;
 	if (!trainer.loadDataset("training_data/nl_to_sql_train.json")) {

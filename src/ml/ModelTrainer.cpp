@@ -5,7 +5,37 @@
 
 using json = nlohmann::json;
 
-MLModelTrainer::MLModelTrainer() {}
+MLModelTrainer::MLModelTrainer()
+    : device_(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU),
+      embedding_dim_(256),
+      hidden_dim_(512) {}
+
+void MLModelTrainer::setModelDims(int embedding_dim, int hidden_dim) {
+    if (embedding_dim <= 0 || hidden_dim <= 0) {
+        std::cerr << "Invalid model dims: embedding_dim=" << embedding_dim
+                  << ", hidden_dim=" << hidden_dim << std::endl;
+        return;
+    }
+    embedding_dim_ = embedding_dim;
+    hidden_dim_ = hidden_dim;
+}
+
+void MLModelTrainer::setDevice(torch::Device device) {
+    if (device.is_cuda() && !torch::cuda::is_available()) {
+        std::cerr << "CUDA requested but not available. Falling back to CPU." << std::endl;
+        device_ = torch::kCPU;
+    } else {
+        device_ = device;
+    }
+
+    if (model_) {
+        model_->to(device_);
+    }
+}
+
+torch::Device MLModelTrainer::device() const {
+    return device_;
+}
 
 bool MLModelTrainer::loadDataset(const std::string& path) {
     std::ifstream file(path);
@@ -32,8 +62,9 @@ bool MLModelTrainer::loadDataset(const std::string& path) {
     model_ = std::make_unique<Seq2SeqModel>(
         nl_vocab_.size(), 
         sql_vocab_.size(), 
-        256,  // embedding_dim
-        512   // hidden_dim
+        embedding_dim_,
+        hidden_dim_,
+        device_
     );
     
     return true;
@@ -56,8 +87,8 @@ std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareData(
     auto nl_indices = nl_vocab_.encode(example.nl_query);
     auto sql_indices = sql_vocab_.encode(example.sql_query);
     
-    auto src = torch::tensor(nl_indices).unsqueeze(1);
-    auto trg = torch::tensor(sql_indices).unsqueeze(1);
+    auto src = torch::tensor(nl_indices, torch::kLong).unsqueeze(1);
+    auto trg = torch::tensor(sql_indices, torch::kLong).unsqueeze(1);
     
     return std::make_tuple(src, trg);
 }
@@ -182,7 +213,10 @@ bool MLModelTrainer::load(const std::string& model_path) {
     
     model_ = std::make_unique<Seq2SeqModel>(
         nl_vocab_.size(), 
-        sql_vocab_.size()
+        sql_vocab_.size(),
+        embedding_dim_,
+        hidden_dim_,
+        device_
     );
     
     return model_->load(model_path);
@@ -192,11 +226,18 @@ std::string MLModelTrainer::predict(const std::string& nl_query) {
     if (!model_) {
         return "";
     }
-    
+
+    const bool was_training = model_->encoder_->is_training() && model_->decoder_->is_training();
+
+    torch::NoGradGuard no_grad;
     model_->eval();
-    
+
     auto nl_indices = nl_vocab_.encode(nl_query);
     auto sql_indices = model_->predict(nl_indices);
-    
+
+    if (was_training) {
+        model_->train();
+    }
+
     return sql_vocab_.decode(sql_indices);
 }

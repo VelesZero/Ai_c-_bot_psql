@@ -4,14 +4,20 @@
 #include <string>
 
 int main(int argc, char** argv) {
-    std::cout << "=== Training NL to SQL Model (CPU-only) ===" << std::endl;
+    std::cout << "=== Training NL to SQL Model ===" << std::endl;
     
     MLModelTrainer trainer;
     
-    // CLI: train_model [epochs] [lr] [--resume]
+    // CLI: train_model [epochs] [lr] [--resume] [--cpu|--cuda|--auto] [--data PATH] [--out PREFIX] [--tiny500k] [--emb N] [--hid N]
     int epochs = 50;
     float lr = 0.001f;
     bool resume = false;
+    enum class DeviceMode { Auto, CPU, CUDA } device_mode = DeviceMode::Auto;
+    std::string data_path = "training_data/nl_to_sql_train.json";
+    std::string out_prefix = "models/seq2seq_model";
+    bool tiny500k = false;
+    int emb_dim = -1;
+    int hid_dim = -1;
     if (argc >= 2) {
         epochs = std::stoi(argv[1]);
     }
@@ -22,17 +28,57 @@ int main(int argc, char** argv) {
         if (std::string(argv[i]) == "--resume") {
             resume = true;
         }
+        if (std::string(argv[i]) == "--cpu") {
+            device_mode = DeviceMode::CPU;
+        }
+        if (std::string(argv[i]) == "--cuda") {
+            device_mode = DeviceMode::CUDA;
+        }
+        if (std::string(argv[i]) == "--auto") {
+            device_mode = DeviceMode::Auto;
+        }
+        if (std::string(argv[i]) == "--data" && i + 1 < argc) {
+            data_path = argv[++i];
+        }
+        if (std::string(argv[i]) == "--out" && i + 1 < argc) {
+            out_prefix = argv[++i];
+        }
+        if (std::string(argv[i]) == "--tiny500k") {
+            tiny500k = true;
+        }
+        if (std::string(argv[i]) == "--emb" && i + 1 < argc) {
+            emb_dim = std::stoi(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--hid" && i + 1 < argc) {
+            hid_dim = std::stoi(argv[++i]);
+        }
     }
 
+    if (device_mode == DeviceMode::CPU) {
+        trainer.setDevice(torch::kCPU);
+    } else if (device_mode == DeviceMode::CUDA) {
+        trainer.setDevice(torch::kCUDA);
+    }
+
+    std::cout << "Training device: "
+              << (trainer.device().is_cuda() ? "CUDA" : "CPU") << std::endl;
+
+    if (tiny500k) {
+        trainer.setModelDims(64, 128);
+    }
+    if (emb_dim > 0 && hid_dim > 0) {
+        trainer.setModelDims(emb_dim, hid_dim);
+    }
+    
     std::cout << "Loading dataset..." << std::endl;
-    if (!trainer.loadDataset("training_data/nl_to_sql_train.json")) {
+    if (!trainer.loadDataset(data_path)) {
         std::cerr << "Failed to load dataset" << std::endl;
         return 1;
     }
 
     if (resume) {
-        std::cout << "Resuming from checkpoint: models/seq2seq_model*" << std::endl;
-        if (!trainer.load("models/seq2seq_model")) {
+        std::cout << "Resuming from checkpoint: " << out_prefix << "*" << std::endl;
+        if (!trainer.load(out_prefix)) {
             std::cerr << "Failed to load existing checkpoint, starting fresh" << std::endl;
         }
     }
@@ -44,7 +90,7 @@ int main(int argc, char** argv) {
     }
     
     std::cout << "Saving model..." << std::endl;
-    if (!trainer.save("models/seq2seq_model")) {
+    if (!trainer.save(out_prefix)) {
         std::cerr << "Failed to save model" << std::endl;
         return 1;
     }

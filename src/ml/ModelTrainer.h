@@ -16,7 +16,12 @@ struct TrainingExample {
 class MLModelTrainer {
 public:
     MLModelTrainer();
+
+    void setDevice(torch::Device device);
+    torch::Device device() const;
     
+    void setModelDims(int embedding_dim, int hidden_dim);
+
     bool loadDataset(const std::string& path);
     bool train(int epochs = 100, float learning_rate = 0.001);
     bool save(const std::string& model_path);
@@ -29,6 +34,10 @@ private:
     Vocabulary nl_vocab_;
     Vocabulary sql_vocab_;
     std::unique_ptr<Seq2SeqModel> model_;
+    torch::Device device_;
+
+    int embedding_dim_;
+    int hidden_dim_;
     
     void buildVocabularies();
     std::tuple<torch::Tensor, torch::Tensor> prepareData(const TrainingExample& example);

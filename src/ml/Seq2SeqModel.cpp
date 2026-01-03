@@ -54,19 +54,28 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> DecoderImpl::forward(
 }
 
 Seq2SeqModel::Seq2SeqModel(int input_vocab_size, int output_vocab_size, 
-                           int embedding_dim, int hidden_dim)
+                           int embedding_dim, int hidden_dim,
+                           torch::Device device)
     : encoder_(Encoder(input_vocab_size, embedding_dim, hidden_dim)),
       decoder_(Decoder(output_vocab_size, embedding_dim, hidden_dim)),
       device_(torch::kCPU) {
-    
-    if (torch::cuda::is_available()) {
-        device_ = torch::kCUDA;
-        encoder_->to(device_);
-        decoder_->to(device_);
-    }
-// в будущем будет вариант с использованием GPU 
+
+    to(device);
+
     std::cout << "Seq2SeqModel using device: "
               << (device_.is_cuda() ? "CUDA" : "CPU") << std::endl;
+}
+
+void Seq2SeqModel::to(torch::Device device) {
+    if (device.is_cuda() && !torch::cuda::is_available()) {
+        std::cerr << "CUDA requested but not available. Falling back to CPU." << std::endl;
+        device_ = torch::kCPU;
+    } else {
+        device_ = device;
+    }
+
+    encoder_->to(device_);
+    decoder_->to(device_);
 }
 
 //обработка Тензора входных данных
@@ -98,9 +107,12 @@ torch::Tensor Seq2SeqModel::forward(torch::Tensor src, torch::Tensor trg) {
 }
 
 std::vector<int> Seq2SeqModel::predict(const std::vector<int>& input, int max_length) {
+    const bool enc_was_training = encoder_->is_training();
+    const bool dec_was_training = decoder_->is_training();
+
     encoder_->eval();
     decoder_->eval();
-    
+
     torch::NoGradGuard no_grad;
     
     auto src = torch::tensor(input).unsqueeze(1).to(device_);
@@ -124,6 +136,9 @@ std::vector<int> Seq2SeqModel::predict(const std::vector<int>& input, int max_le
         
         result.push_back(current_token);
     }
+
+    if (enc_was_training) encoder_->train();
+    if (dec_was_training) decoder_->train();
     
     return result;
 }
@@ -158,6 +173,8 @@ bool Seq2SeqModel::load(const std::string& path) {
     try {
         torch::load(encoder_, path + "_encoder.pt");
         torch::load(decoder_, path + "_decoder.pt");
+        encoder_->to(device_);
+        decoder_->to(device_);
         return true;
     } catch (...) {
         return false;

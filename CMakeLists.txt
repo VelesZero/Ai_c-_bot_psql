@@ -45,6 +45,16 @@ endif()
 # Torch (libtorch)
 set(Torch_DIR "${PROJECT_SOURCE_DIR}/libtorch/share/cmake/Torch")
 set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libtorch;${CMAKE_PREFIX_PATH}")
+
+# Some LibTorch CUDA distributions bundle NVTX (nvToolsExt) inside libtorch/lib,
+# but CMake's CUDAToolkit package may not expose CUDA::nvToolsExt on some distros.
+# Predefine it so Torch's CUDA config doesn't hard-fail during find_package(Torch).
+if(NOT TARGET CUDA::nvToolsExt AND EXISTS "${PROJECT_SOURCE_DIR}/libtorch/lib/libnvToolsExt.so")
+    add_library(CUDA::nvToolsExt SHARED IMPORTED)
+    set_target_properties(CUDA::nvToolsExt PROPERTIES
+        IMPORTED_LOCATION "${PROJECT_SOURCE_DIR}/libtorch/lib/libnvToolsExt.so"
+    )
+endif()
 find_package(Torch REQUIRED)
 message(STATUS "Found Torch: ${TORCH_VERSION}")
 
@@ -184,5 +194,18 @@ set_target_properties(train_model_data PROPERTIES
     INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
 )
 
+# Dataset generator for bookings demo DB (from SQL dump)
+add_executable(generate_bookings_dataset
+    training_data/generate_bookings_dataset.cpp
+)
+
+if(nlohmann_json_FOUND)
+    target_link_libraries(generate_bookings_dataset PRIVATE nlohmann_json::nlohmann_json pthread)
+else()
+    target_link_libraries(generate_bookings_dataset PRIVATE pthread)
+endif()
+
+set_target_properties(generate_bookings_dataset PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # Установка
-install(TARGETS ${PROJECT_NAME} train_model test_model train_model_data DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} train_model test_model train_model_data generate_bookings_dataset DESTINATION bin)
