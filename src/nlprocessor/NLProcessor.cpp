@@ -1,6 +1,7 @@
 #include "src/nlprocessor/NLProcessor.h"
 #include "src/utils/Logger.h"
 #include "src/ml/ModelTrainer.h"
+#include "src/config/Config.h"
 #include <sstream>
 
 NLProcessor::~NLProcessor() {}
@@ -13,6 +14,14 @@ NLProcessor::NLProcessor() {
 bool NLProcessor::initialize(const std::string& modelPath) {
     Logger::getInstance().info("Initializing NLProcessor with model: " + modelPath);
     modelPath_ = modelPath;
+
+    // Make sure the trainer constructs a model with the same dimensions as the checkpoint.
+    // Defaults match the legacy model (256/512).
+    Config& config = Config::getInstance();
+    int emb_dim = config.getInt("model_emb_dim", 256);
+    int hid_dim = config.getInt("model_hid_dim", 512);
+    trainer_->setModelDims(emb_dim, hid_dim);
+
     modelLoaded_ = trainer_->load(modelPath);
     if (modelLoaded_) {
         Logger::getInstance().info("Model loaded successfully");
@@ -49,6 +58,13 @@ NLProcessor::ProcessingResult NLProcessor::processQueryDetailed(const std::strin
 
     if (!modelLoaded_ && !modelPath_.empty()) {
         initialize(modelPath_);
+    }
+
+    if (!modelLoaded_) {
+        result.success = false;
+        result.errorMessage = "Model is not loaded";
+        Logger::getInstance().error("Query processing failed: " + result.errorMessage);
+        return result;
     }
 
     Logger::getInstance().info("Processing query: " + naturalLanguageQuery);
