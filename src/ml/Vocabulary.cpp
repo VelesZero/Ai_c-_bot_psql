@@ -3,6 +3,7 @@
 #include <fstream>
 #include <algorithm>
 #include <cctype>
+#include <vector>
 
 Vocabulary::Vocabulary() : nextIdx_(4) {
     word2idx_["<PAD>"] = PAD_TOKEN;
@@ -17,6 +18,7 @@ Vocabulary::Vocabulary() : nextIdx_(4) {
 }
 
 void Vocabulary::addWord(const std::string& word) {
+    freq_[word] += 1;
     if (word2idx_.find(word) == word2idx_.end()) {
         word2idx_[word] = nextIdx_;
         idx2word_[nextIdx_] = word;
@@ -28,6 +30,65 @@ void Vocabulary::addSentence(const std::string& text) {
     auto tokens = tokenize(text);
     for (const auto& t : tokens) {
         addWord(t);
+    }
+}
+
+void Vocabulary::limitSize(int max_size) {
+    if (max_size <= 0) {
+        limited_built_ = false;
+        return;
+    }
+    rebuildFromFrequencies(max_size);
+    limited_built_ = true;
+}
+
+void Vocabulary::rebuildFromFrequencies(int max_size) {
+    // Preserve special tokens indices.
+    word2idx_.clear();
+    idx2word_.clear();
+    nextIdx_ = 4;
+
+    word2idx_["<PAD>"] = PAD_TOKEN;
+    word2idx_["<SOS>"] = SOS_TOKEN;
+    word2idx_["<EOS>"] = EOS_TOKEN;
+    word2idx_["<UNK>"] = UNK_TOKEN;
+
+    idx2word_[PAD_TOKEN] = "<PAD>";
+    idx2word_[SOS_TOKEN] = "<SOS>";
+    idx2word_[EOS_TOKEN] = "<EOS>";
+    idx2word_[UNK_TOKEN] = "<UNK>";
+
+    int budget = max_size - 4;
+    if (budget <= 0) {
+        return;
+    }
+
+    std::vector<std::pair<std::string, int>> items;
+    items.reserve(freq_.size());
+    for (const auto& kv : freq_) {
+        // Never include special tokens into the counted vocabulary.
+        if (kv.first == "<PAD>" || kv.first == "<SOS>" || kv.first == "<EOS>" || kv.first == "<UNK>") {
+            continue;
+        }
+        items.push_back(kv);
+    }
+
+    std::sort(items.begin(), items.end(), [](const auto& a, const auto& b) {
+        if (a.second != b.second) return a.second > b.second; // higher freq first
+        return a.first < b.first; // tie-breaker for determinism
+    });
+
+    if (static_cast<int>(items.size()) > budget) {
+        items.resize(static_cast<size_t>(budget));
+    }
+
+    for (const auto& kv : items) {
+        const auto& w = kv.first;
+        if (word2idx_.find(w) == word2idx_.end()) {
+            word2idx_[w] = nextIdx_;
+            idx2word_[nextIdx_] = w;
+            nextIdx_++;
+        }
     }
 }
 
@@ -117,6 +178,8 @@ bool Vocabulary::load(const std::string& path) {
     
     word2idx_.clear();
     idx2word_.clear();
+    freq_.clear();
+    limited_built_ = true;
     
     file >> nextIdx_;
     file.ignore();

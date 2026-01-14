@@ -22,6 +22,9 @@ public:
     
     void setModelDims(int embedding_dim, int hidden_dim);
 
+    void setBatchSize(int batch_size);
+    void setVocabLimits(int nl_vocab_max, int sql_vocab_max);
+
     bool loadDataset(const std::string& path);
     bool train(int epochs = 100, float learning_rate = 0.001);
     bool save(const std::string& model_path);
@@ -38,9 +41,13 @@ private:
 
     int embedding_dim_;
     int hidden_dim_;
+    int batch_size_ = 32;
+    int nl_vocab_max_ = 0;
+    int sql_vocab_max_ = 0;
     
     void buildVocabularies();
     std::tuple<torch::Tensor, torch::Tensor> prepareData(const TrainingExample& example);
+    std::tuple<torch::Tensor, torch::Tensor> prepareBatch(const std::vector<size_t>& indices);
 };
 
 #endif

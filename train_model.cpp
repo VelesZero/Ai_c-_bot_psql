@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
     
     MLModelTrainer trainer;
     
-    // CLI: train_model [epochs] [lr] [--resume] [--cpu|--cuda|--auto] [--data PATH] [--out PREFIX] [--tiny500k] [--emb N] [--hid N]
+    // CLI: train_model [epochs] [lr] [--resume] [--cpu|--cuda|--auto] [--data PATH] [--out PREFIX] [--tiny500k] [--emb N] [--hid N] [--batch N] [--nl-vocab N] [--sql-vocab N]
     int epochs = 50;
     float lr = 0.001f;
     bool resume = false;
@@ -18,6 +18,9 @@ int main(int argc, char** argv) {
     bool tiny500k = false;
     int emb_dim = -1;
     int hid_dim = -1;
+    int batch_size = 64;
+    int nl_vocab_max = 0;
+    int sql_vocab_max = 0;
     if (argc >= 2) {
         epochs = std::stoi(argv[1]);
     }
@@ -52,6 +55,15 @@ int main(int argc, char** argv) {
         if (std::string(argv[i]) == "--hid" && i + 1 < argc) {
             hid_dim = std::stoi(argv[++i]);
         }
+        if (std::string(argv[i]) == "--batch" && i + 1 < argc) {
+            batch_size = std::stoi(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--nl-vocab" && i + 1 < argc) {
+            nl_vocab_max = std::stoi(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--sql-vocab" && i + 1 < argc) {
+            sql_vocab_max = std::stoi(argv[++i]);
+        }
     }
 
     if (device_mode == DeviceMode::CPU) {
@@ -69,6 +81,9 @@ int main(int argc, char** argv) {
     if (emb_dim > 0 && hid_dim > 0) {
         trainer.setModelDims(emb_dim, hid_dim);
     }
+
+    trainer.setBatchSize(batch_size);
+    trainer.setVocabLimits(nl_vocab_max, sql_vocab_max);
     
     std::cout << "Loading dataset..." << std::endl;
     if (!trainer.loadDataset(data_path)) {

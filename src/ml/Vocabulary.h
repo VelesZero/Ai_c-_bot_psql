@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <utility>
 
 class Vocabulary {
 public:
@@ -18,6 +19,12 @@ public:
     void addWord(const std::string& word);
     // Add all tokens from a raw sentence into the vocabulary
     void addSentence(const std::string& text);
+
+    // Limit vocabulary size by keeping top-K most frequent tokens.
+    // K includes special tokens (<PAD>, <SOS>, <EOS>, <UNK>) in the total size.
+    // If K <= 0, the vocabulary is built without limiting.
+    void limitSize(int max_size);
+
     int getIndex(const std::string& word) const;
     std::string getWord(int index) const;
     
@@ -33,8 +40,13 @@ private:
     std::unordered_map<std::string, int> word2idx_;
     std::unordered_map<int, std::string> idx2word_;
     int nextIdx_;
+
+    // Frequency table used to build a limited vocabulary.
+    std::unordered_map<std::string, int> freq_;
+    bool limited_built_ = false;
     
     std::vector<std::string> tokenize(const std::string& text) const;
+    void rebuildFromFrequencies(int max_size);
 };
 
 #endif

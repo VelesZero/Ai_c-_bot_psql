@@ -119,9 +119,9 @@ std::string ResponseParser::toTable(const DatabaseConnector::QueryResult& result
     for (auto width : widths) {
         oss << std::string(width + 2, '-') << "+";
     }
-    oss << endl;
+    oss << std::endl;
     
-    oss << "\nTotal rows: " << result.rowCount << endl;
+    oss << "\nTotal rows: " << result.rowCount << std::endl;
     
     return oss.str();
 }
