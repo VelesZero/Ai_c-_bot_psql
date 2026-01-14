@@ -25,6 +25,8 @@ Makefile
 .DS_Store
 *.log
 *.tmp
+training_data/multidomain_nl_to_sql_1m.json
+training_data/*_1m.json
 libtorch/
 libtorch/
 libtorch_bak_cu118/
