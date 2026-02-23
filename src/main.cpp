@@ -67,8 +67,11 @@ int main(int argc, char* argv[]) {
         
         if (line == "tables") {
             std::string result = agent.executeSQL(
-                "SELECT table_name FROM information_schema.tables "
-                "WHERE table_schema = 'public'");
+                "SELECT table_schema, table_name "
+                "FROM information_schema.tables "
+                "WHERE table_type = 'BASE TABLE' "
+                "  AND table_schema IN ('bookings','public') "
+                "ORDER BY table_schema, table_name");
             std::cout << result << "\n";
             continue;
         }
