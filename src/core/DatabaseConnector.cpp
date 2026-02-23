@@ -24,6 +24,9 @@ std::string DatabaseConnector::buildConnectionString(
         oss << " password=" << password;
     }
     
+    // Add search_path to include bookings schema
+    oss << " options='-c search_path=bookings,public'";
+    
     return oss.str();
 }
 

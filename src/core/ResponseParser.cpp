@@ -105,8 +105,10 @@ std::string ResponseParser::toTable(const DatabaseConnector::QueryResult& result
     }
     oss << "\n";
     
-    // Данные
-    for (const auto& row : result.rows) {
+    // Данные (ограничение до 15 строк)
+    size_t maxRows = std::min(static_cast<size_t>(15), result.rows.size());
+    for (size_t rowIndex = 0; rowIndex < maxRows; ++rowIndex) {
+        const auto& row = result.rows[rowIndex];
         oss << "|";
         for (size_t i = 0; i < row.size() && i < widths.size(); ++i) {
             oss << " " << padString(row[i], widths[i]) << " |";
@@ -121,7 +123,12 @@ std::string ResponseParser::toTable(const DatabaseConnector::QueryResult& result
     }
     oss << std::endl;
     
-    oss << "\nTotal rows: " << result.rowCount << std::endl;
+    // Информация о количестве строк
+    if (result.rowCount > 15) {
+        oss << "\nShowing first 15 rows of " << result.rowCount << " total rows.\n";
+    } else {
+        oss << "\nTotal rows: " << result.rowCount << "\n";
+    }
     
     return oss.str();
 }
@@ -136,13 +143,20 @@ std::string ResponseParser::toCSV(const DatabaseConnector::QueryResult& result) 
     }
     oss << "\n";
     
-    // Данные
-    for (const auto& row : result.rows) {
+    // Данные (ограничение до 15 строк)
+    size_t maxRows = std::min(static_cast<size_t>(15), result.rows.size());
+    for (size_t rowIndex = 0; rowIndex < maxRows; ++rowIndex) {
+        const auto& row = result.rows[rowIndex];
         for (size_t i = 0; i < row.size(); ++i) {
             if (i > 0) oss << ",";
             oss << "\"" << row[i] << "\"";
         }
         oss << "\n";
+    }
+    
+    // Информация о количестве строк
+    if (result.rowCount > 15) {
+        oss << "\n# Showing first 15 rows of " << result.rowCount << " total rows.\n";
     }
     
     return oss.str();
@@ -151,14 +165,22 @@ std::string ResponseParser::toCSV(const DatabaseConnector::QueryResult& result) 
 std::string ResponseParser::toPlainText(const DatabaseConnector::QueryResult& result) {
     std::ostringstream oss;
     
-    for (const auto& row : result.rows) {
+    // Данные (ограничение до 15 строк)
+    size_t maxRows = std::min(static_cast<size_t>(15), result.rows.size());
+    for (size_t rowIndex = 0; rowIndex < maxRows; ++rowIndex) {
+        const auto& row = result.rows[rowIndex];
         for (size_t i = 0; i < result.columns.size() && i < row.size(); ++i) {
             oss << result.columns[i] << ": " << row[i] << "\n";
         }
         oss << "\n";
     }
     
-    oss << "Total rows: " << result.rowCount << "\n";
+    // Информация о количестве строк
+    if (result.rowCount > 15) {
+        oss << "Showing first 15 rows of " << result.rowCount << " total rows.\n";
+    } else {
+        oss << "Total rows: " << result.rowCount << "\n";
+    }
     
     return oss.str();
 }

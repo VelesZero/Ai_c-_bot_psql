@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cctype>
 #include <vector>
+#include <iostream>
 
 Vocabulary::Vocabulary() : nextIdx_(4) {
     word2idx_["<PAD>"] = PAD_TOKEN;
@@ -181,17 +182,37 @@ bool Vocabulary::load(const std::string& path) {
     freq_.clear();
     limited_built_ = true;
     
-    file >> nextIdx_;
-    file.ignore();
-    
     std::string line;
+    if (std::getline(file, line)) {
+        try {
+            nextIdx_ = std::stoi(line);
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "Error parsing nextIdx_ from vocabulary file: " << e.what() << std::endl;
+            return false;
+        } catch (const std::out_of_range& e) {
+            std::cerr << "nextIdx_ value out of range in vocabulary file: " << e.what() << std::endl;
+            return false;
+        }
+    } else {
+        std::cerr << "Error: Could not read nextIdx_ from vocabulary file" << std::endl;
+        return false;
+    }
+    
     while (std::getline(file, line)) {
         size_t tab = line.find('\t');
         if (tab != std::string::npos) {
             std::string word = line.substr(0, tab);
-            int idx = std::stoi(line.substr(tab + 1));
-            word2idx_[word] = idx;
-            idx2word_[idx] = word;
+            try {
+                int idx = std::stoi(line.substr(tab + 1));
+                word2idx_[word] = idx;
+                idx2word_[idx] = word;
+            } catch (const std::invalid_argument& e) {
+                std::cerr << "Error parsing index for word '" << word << "': " << e.what() << std::endl;
+                return false;
+            } catch (const std::out_of_range& e) {
+                std::cerr << "Index value out of range for word '" << word << "': " << e.what() << std::endl;
+                return false;
+            }
         }
     }
     
