@@ -111169,5 +111169,7 @@
     {"nl":"show airports_data where timezone equals Europe/Podgorica","sql":"select * from bookings.airports_data where timezone = 'Europe/Podgorica'"},
     {"nl":"выведи airport_name из airports_data","sql":"select airport_name from bookings.airports_data"},
     {"nl":"показать все airports_data","sql":"select * from bookings.airports_data"},
-    {"nl":"покажи airports_data где city не пусто","sql":"select * from bookings.airports_data where city is not null"},
+    {"nl":"покажи airports_data где city не пусто","sql":"select * from bookings.airports_data where city is not null"}
+  ]
+}
     
