@@ -21,15 +21,45 @@ int main(int argc, char** argv) {
     int batch_size = 64;
     int nl_vocab_max = 0;
     int sql_vocab_max = 0;
-    if (argc >= 2) {
+
+    auto is_number = [](const std::string& s) -> bool {
+        if (s.empty()) return false;
+        size_t i = 0;
+        if (s[0] == '+' || s[0] == '-') i = 1;
+        bool any_digit = false;
+        bool any_dot = false;
+        for (; i < s.size(); ++i) {
+            const char c = s[i];
+            if (c >= '0' && c <= '9') {
+                any_digit = true;
+                continue;
+            }
+            if (c == '.' && !any_dot) {
+                any_dot = true;
+                continue;
+            }
+            return false;
+        }
+        return any_digit;
+    };
+
+    // Backward-compatible positional args: train_model <epochs> <lr>
+    if (argc >= 2 && is_number(argv[1])) {
         epochs = std::stoi(argv[1]);
     }
-    if (argc >= 3) {
+    if (argc >= 3 && is_number(argv[2])) {
         lr = std::stof(argv[2]);
     }
+
     for (int i = 1; i < argc; ++i) {
         if (std::string(argv[i]) == "--resume") {
             resume = true;
+        }
+        if (std::string(argv[i]) == "--epochs" && i + 1 < argc) {
+            epochs = std::stoi(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--lr" && i + 1 < argc) {
+            lr = std::stof(argv[++i]);
         }
         if (std::string(argv[i]) == "--cpu") {
             device_mode = DeviceMode::CPU;

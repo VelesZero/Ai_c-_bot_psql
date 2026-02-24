@@ -176,5 +176,18 @@ endif()
 
 set_target_properties(generate_bookings_dataset PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# Dataset generator for bookings DB (connects to PostgreSQL and samples real values)
+add_executable(generate_bookings_dataset_from_db
+    training_data/generate_bookings_dataset_from_db.cpp
+)
+
+if(nlohmann_json_FOUND)
+    target_link_libraries(generate_bookings_dataset_from_db PRIVATE pqxx pq nlohmann_json::nlohmann_json pthread)
+else()
+    target_link_libraries(generate_bookings_dataset_from_db PRIVATE pqxx pq pthread)
+endif()
+
+set_target_properties(generate_bookings_dataset_from_db PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # Установка
-install(TARGETS ${PROJECT_NAME} train_model test_model generate_bookings_dataset DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} train_model test_model generate_bookings_dataset generate_bookings_dataset_from_db DESTINATION bin)
