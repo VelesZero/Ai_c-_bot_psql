@@ -31,7 +31,7 @@ public:
     std::vector<int> encode(const std::string& sentence) const;
     std::string decode(const std::vector<int>& indices) const;
     
-    int size() const { return word2idx_.size(); }
+    int size() const { return nextIdx_; }
     
     bool save(const std::string& path) const;
     bool load(const std::string& path);

@@ -20,6 +20,7 @@ bool NLProcessor::initialize(const std::string& modelPath) {
     Config& config = Config::getInstance();
     int emb_dim = config.getInt("model_emb_dim", 256);
     int hid_dim = config.getInt("model_hid_dim", 512);
+    Logger::getInstance().info("Model dims from config: emb_dim=" + std::to_string(emb_dim) + ", hid_dim=" + std::to_string(hid_dim));
     trainer_->setModelDims(emb_dim, hid_dim);
 
     modelLoaded_ = trainer_->load(modelPath);

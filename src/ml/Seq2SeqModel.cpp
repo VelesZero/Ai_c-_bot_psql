@@ -176,7 +176,11 @@ bool Seq2SeqModel::load(const std::string& path) {
         encoder_->to(device_);
         decoder_->to(device_);
         return true;
+    } catch (const std::exception& e) {
+        std::cerr << "Seq2SeqModel::load failed: " << e.what() << std::endl;
+        return false;
     } catch (...) {
+        std::cerr << "Seq2SeqModel::load failed: unknown error" << std::endl;
         return false;
     }
 }
