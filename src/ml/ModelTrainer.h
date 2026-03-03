@@ -13,14 +13,22 @@ struct TrainingExample {
     std::string sql_query;
 };
 
+struct PredictResult {
+    std::string sql;
+    float confidence;
+};
+
 class MLModelTrainer {
 public:
     MLModelTrainer();
 
     void setDevice(torch::Device device);
     torch::Device device() const;
-    
+
     void setModelDims(int embedding_dim, int hidden_dim);
+    void setDropout(float dropout_p);
+    void setTeacherForcingRatio(float start, float end);
+    void setBeamWidth(int width);
 
     void setBatchSize(int batch_size);
     void setVocabLimits(int nl_vocab_max, int sql_vocab_max);
@@ -29,9 +37,10 @@ public:
     bool train(int epochs = 100, float learning_rate = 0.001);
     bool save(const std::string& model_path);
     bool load(const std::string& model_path);
-    
+
     std::string predict(const std::string& nl_query);
-    
+    PredictResult predictWithConfidence(const std::string& nl_query);
+
 private:
     std::vector<TrainingExample> dataset_;
     Vocabulary nl_vocab_;
@@ -41,10 +50,18 @@ private:
 
     int embedding_dim_;
     int hidden_dim_;
+    float dropout_p_ = 0.1f;
     int batch_size_ = 32;
     int nl_vocab_max_ = 0;
     int sql_vocab_max_ = 0;
-    
+
+    // Teacher forcing: linearly decays from tf_start_ to tf_end_ over epochs
+    float tf_start_ = 1.0f;
+    float tf_end_ = 0.5f;
+
+    // Beam search width (0 = greedy)
+    int beam_width_ = 3;
+
     void buildVocabularies();
     std::tuple<torch::Tensor, torch::Tensor> prepareData(const TrainingExample& example);
     std::tuple<torch::Tensor, torch::Tensor> prepareBatch(const std::vector<size_t>& indices);

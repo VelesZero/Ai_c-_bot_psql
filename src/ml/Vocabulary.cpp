@@ -106,10 +106,52 @@ std::string Vocabulary::getWord(int index) const {
 std::vector<std::string> Vocabulary::tokenize(const std::string& text) const {
     std::vector<std::string> tokens;
     std::string token;
-    
-    for (char c : text) {
-        if (std::isspace(c) || c == ',' || c == '(' || c == ')' || 
-            c == ';' || c == '=' || c == '<' || c == '>') {
+    size_t i = 0;
+    const size_t len = text.size();
+
+    while (i < len) {
+        char c = text[i];
+
+        // Handle quoted strings as single tokens
+        if (c == '\'' || c == '"') {
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
+            }
+            char quote = c;
+            std::string quoted(1, c);
+            i++;
+            while (i < len && text[i] != quote) {
+                quoted += text[i];
+                i++;
+            }
+            if (i < len) {
+                quoted += text[i]; // closing quote
+                i++;
+            }
+            tokens.push_back(quoted);
+            continue;
+        }
+
+        // Multi-char operators: !=, >=, <=, ||, ::
+        if (i + 1 < len) {
+            std::string two = text.substr(i, 2);
+            if (two == "!=" || two == ">=" || two == "<=" ||
+                two == "||" || two == "::") {
+                if (!token.empty()) {
+                    tokens.push_back(token);
+                    token.clear();
+                }
+                tokens.push_back(two);
+                i += 2;
+                continue;
+            }
+        }
+
+        // Single-char delimiters
+        if (std::isspace(c) || c == ',' || c == '(' || c == ')' ||
+            c == ';' || c == '=' || c == '<' || c == '>' ||
+            c == '+' || c == '-' || c == '*' || c == '/') {
             if (!token.empty()) {
                 tokens.push_back(token);
                 token.clear();
@@ -117,15 +159,33 @@ std::vector<std::string> Vocabulary::tokenize(const std::string& text) const {
             if (!std::isspace(c)) {
                 tokens.push_back(std::string(1, c));
             }
-        } else {
-            token += std::tolower(c);
+            i++;
+            continue;
         }
+
+        // Dot: keep as part of token for schema.table notation
+        // but emit as separator if between two word tokens
+        if (c == '.') {
+            // If current token looks like a word/identifier, treat dot as separator
+            // to get "schema" "." "table" — useful for SQL
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
+            }
+            tokens.push_back(".");
+            i++;
+            continue;
+        }
+
+        // Regular character — accumulate into token (lowercase)
+        token += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        i++;
     }
-    
+
     if (!token.empty()) {
         tokens.push_back(token);
     }
-    
+
     return tokens;
 }
 
@@ -144,20 +204,31 @@ std::vector<int> Vocabulary::encode(const std::string& sentence) const {
 
 std::string Vocabulary::decode(const std::vector<int>& indices) const {
     std::string result;
-    
+
     for (int idx : indices) {
         if (idx == PAD_TOKEN || idx == SOS_TOKEN || idx == EOS_TOKEN) {
             continue;
         }
-        
+
         std::string word = getWord(idx);
-        if (!result.empty() && word != "," && word != "(" && word != ")" && 
-            word != ";" && word != "=" && word != "<" && word != ">") {
-            result += " ";
+
+        // No space before punctuation/operators that attach to the left
+        bool no_space_before = (word == "," || word == "(" || word == ")" ||
+                                word == ";" || word == "=" || word == "<" ||
+                                word == ">" || word == "." || word == ">=" ||
+                                word == "<=" || word == "!=" || word == "::");
+
+        if (!result.empty() && !no_space_before) {
+            // No space after opening paren
+            if (!result.empty() && result.back() == '(') {
+                // no space
+            } else {
+                result += " ";
+            }
         }
         result += word;
     }
-    
+
     return result;
 }
 

@@ -81,26 +81,28 @@ void QueryBuilder::reset() {
 
 bool QueryBuilder::validateSQL(const std::string& sql) const {
     std::string lower = Utils::toLower(sql);
-    
-    // Проверка на опасные команды
-    std::vector<std::string> dangerousKeywords = {
-        "drop", "truncate", "alter", "create", "grant", "revoke"
-    };
-    
-    for (const auto& keyword : dangerousKeywords) {
-        if (lower.find(keyword) != std::string::npos) {
-            Logger::getInstance().warning("Dangerous keyword detected: " + keyword);
-            return false;
-        }
+
+    // Word-boundary check: dangerous keyword must appear as a whole word
+    // (not as a substring like "drop" in "dropdown")
+    static const std::regex dangerousPattern(
+        R"(\b(drop|truncate|alter|create|grant|revoke)\b)",
+        std::regex::icase | std::regex::optimize);
+
+    if (std::regex_search(lower, dangerousPattern)) {
+        Logger::getInstance().warning("Dangerous SQL keyword detected in: " + sql);
+        return false;
     }
-    
-    // Проверка на SQL injection паттерны
-    std::regex injectionPattern(R"((;|\-\-|\/\*|\*\/|xp_|sp_|exec|execute))");
+
+    // SQL injection patterns (compiled once)
+    static const std::regex injectionPattern(
+        R"((;|\-\-|\/\*|\*\/|\bxp_|\bsp_|\bexec\b|\bexecute\b))",
+        std::regex::icase | std::regex::optimize);
+
     if (std::regex_search(lower, injectionPattern)) {
         Logger::getInstance().warning("Potential SQL injection detected");
         return false;
     }
-    
+
     return true;
 }
 

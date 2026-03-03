@@ -133,32 +133,52 @@ std::string ResponseParser::toTable(const DatabaseConnector::QueryResult& result
     return oss.str();
 }
 
+static std::string csvEscape(const std::string& field) {
+    // RFC 4180: if field contains quotes, commas, or newlines, wrap in quotes
+    // and double any existing quotes
+    bool needsQuoting = false;
+    for (char c : field) {
+        if (c == '"' || c == ',' || c == '\n' || c == '\r') {
+            needsQuoting = true;
+            break;
+        }
+    }
+    if (!needsQuoting) return "\"" + field + "\"";
+
+    std::string escaped = "\"";
+    for (char c : field) {
+        if (c == '"') escaped += "\"\"";
+        else escaped += c;
+    }
+    escaped += "\"";
+    return escaped;
+}
+
 std::string ResponseParser::toCSV(const DatabaseConnector::QueryResult& result) {
     std::ostringstream oss;
-    
+
     // Заголовки
     for (size_t i = 0; i < result.columns.size(); ++i) {
         if (i > 0) oss << ",";
-        oss << "\"" << result.columns[i] << "\"";
+        oss << csvEscape(result.columns[i]);
     }
     oss << "\n";
-    
+
     // Данные (ограничение до 15 строк)
     size_t maxRows = std::min(static_cast<size_t>(15), result.rows.size());
     for (size_t rowIndex = 0; rowIndex < maxRows; ++rowIndex) {
         const auto& row = result.rows[rowIndex];
         for (size_t i = 0; i < row.size(); ++i) {
             if (i > 0) oss << ",";
-            oss << "\"" << row[i] << "\"";
+            oss << csvEscape(row[i]);
         }
         oss << "\n";
     }
-    
-    // Информация о количестве строк
+
     if (result.rowCount > 15) {
         oss << "\n# Showing first 15 rows of " << result.rowCount << " total rows.\n";
     }
-    
+
     return oss.str();
 }
 

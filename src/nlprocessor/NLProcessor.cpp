@@ -71,12 +71,13 @@ NLProcessor::ProcessingResult NLProcessor::processQueryDetailed(const std::strin
     Logger::getInstance().info("Processing query: " + naturalLanguageQuery);
 
     try {
-        std::string sql = trainer_->predict(naturalLanguageQuery);
-        if (!sql.empty()) {
-            result.sqlQuery = sql;
-            result.confidence = 0.85;
+        auto pred = trainer_->predictWithConfidence(naturalLanguageQuery);
+        if (!pred.sql.empty()) {
+            result.sqlQuery = pred.sql;
+            result.confidence = pred.confidence;
             result.success = true;
-            Logger::getInstance().info("Predicted SQL: " + sql);
+            Logger::getInstance().info("Predicted SQL (conf=" +
+                std::to_string(static_cast<int>(pred.confidence * 100)) + "%): " + pred.sql);
         } else {
             result.success = false;
             result.errorMessage = "Empty prediction";

@@ -3,6 +3,7 @@
 #include "src/utils/Utilities.h"
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 
 Config::Config() {
     setDefaults();
@@ -13,14 +14,19 @@ Config& Config::getInstance() {
     return instance;
 }
 
+static std::string envOrDefault(const char* envVar, const std::string& fallback) {
+    const char* val = std::getenv(envVar);
+    return (val && val[0]) ? std::string(val) : fallback;
+}
+
 void Config::setDefaults() {
-    config_["db_host"] = "localhost";
-    config_["db_port"] = "5432";
-    config_["db_name"] = "ai_db";
-    config_["db_user"] = "ai_user";
-    config_["db_password"] = "123"; 
-    config_["model_path"] = "models/seq2seq_multidomain_1m";
-    config_["training_data_path"] = "training_data/queries.json";
+    config_["db_host"] = envOrDefault("AI_DB_HOST", "localhost");
+    config_["db_port"] = envOrDefault("AI_DB_PORT", "5432");
+    config_["db_name"] = envOrDefault("AI_DB_NAME", "ai_db");
+    config_["db_user"] = envOrDefault("AI_DB_USER", "ai_user");
+    config_["db_password"] = envOrDefault("AI_DB_PASSWORD", "");
+    config_["model_path"] = envOrDefault("AI_MODEL_PATH", "models/seq2seq_multidomain_1m");
+    config_["training_data_path"] = envOrDefault("AI_TRAINING_DATA", "training_data/queries.json");
     config_["log_file"] = "agent.log";
     config_["log_level"] = "INFO";
 }

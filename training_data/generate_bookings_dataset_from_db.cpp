@@ -180,13 +180,6 @@ static std::vector<double> sample_numeric(pqxx::connection& conn,
     return vals;
 }
 
-static void add_example(json& examples, const std::string& nl, const std::string& sql) {
-    json ex;
-    ex["nl"] = nl;
-    ex["sql"] = sql;
-    examples.push_back(std::move(ex));
-}
-
 static std::string rnd_pick(std::mt19937& rng, const std::vector<std::string>& items) {
     if (items.empty()) return "";
     std::uniform_int_distribution<size_t> d(0, items.size() - 1);
@@ -473,106 +466,17 @@ static std::string fqtn(const TableInfo& t) {
     return t.schema + "." + t.name;
 }
 
-static void generate_for_table(json& examples,
-                               pqxx::connection& conn,
-                               const TableInfo& t,
-                               std::mt19937& rng,
-                               int per_table) {
-    const std::string table = fqtn(t);
-
-    add_example(examples, "list all " + t.name, "select * from " + table);
-    add_example(examples, "number of " + t.name, "select count(*) from " + table);
-    add_example(examples, "get 5 rows from " + t.name, "select * from " + table + " limit 5");
-
-    std::vector<ColumnInfo> text_cols;
-    std::vector<ColumnInfo> num_cols;
-    std::vector<ColumnInfo> time_cols;
-
-    for (const auto& c : t.columns) {
-        if (is_text_type(c.data_type)) text_cols.push_back(c);
-        else if (is_numeric_type(c.data_type)) num_cols.push_back(c);
-        else if (is_time_type(c.data_type)) time_cols.push_back(c);
-    }
-
-    std::shuffle(text_cols.begin(), text_cols.end(), rng);
-    std::shuffle(num_cols.begin(), num_cols.end(), rng);
-    std::shuffle(time_cols.begin(), time_cols.end(), rng);
-
-    int produced = 3;
-
-    if (!num_cols.empty()) {
-        const auto& c = num_cols.front();
-        add_example(examples,
-                    "get avg of " + c.name + " from " + t.name,
-                    "select avg(" + c.name + ") from " + table);
-        produced++;
-
-        auto vals = sample_numeric(conn, t, c, 25, rng);
-        if (!vals.empty()) {
-            std::uniform_int_distribution<size_t> pick(0, vals.size() - 1);
-            double v = vals[pick(rng)];
-            std::ostringstream ss;
-            ss << v;
-            add_example(examples,
-                        "show " + t.name + " where " + c.name + " greater than " + ss.str(),
-                        "select * from " + table + " where " + c.name + " > " + ss.str());
-            produced++;
-        }
-    }
-
-    if (!text_cols.empty()) {
-        const auto& c = text_cols.front();
-        auto vals = sample_distinct_text(conn, t, c, 25, rng);
-        if (!vals.empty()) {
-            std::uniform_int_distribution<size_t> pick(0, vals.size() - 1);
-            std::string v = vals[pick(rng)];
-            std::string v_short = v;
-            if (v_short.size() > 24) v_short = v_short.substr(0, 24);
-            add_example(examples,
-                        "show " + t.name + " where " + c.name + " equals " + v_short,
-                        "select * from " + table + " where " + c.name + " = " + sql_literal(v));
-            produced++;
-        }
-    }
-
-    while (produced < per_table) {
-        std::uniform_int_distribution<int> kind(0, 3);
-        int k = kind(rng);
-        if (k == 0 && t.columns.size() >= 1) {
-            std::uniform_int_distribution<size_t> idx(0, t.columns.size() - 1);
-            const auto& c = t.columns[idx(rng)];
-            add_example(examples,
-                        "select " + c.name + " from " + t.name,
-                        "select " + c.name + " from " + table);
-            produced++;
-        } else if (k == 1 && t.columns.size() >= 1) {
-            std::uniform_int_distribution<size_t> idx(0, t.columns.size() - 1);
-            const auto& c = t.columns[idx(rng)];
-            add_example(examples,
-                        "count where " + c.name + " is not null in " + t.name,
-                        "select count(*) from " + table + " where " + c.name + " is not null");
-            produced++;
-        } else if (k == 2) {
-            int lim = 10;
-            add_example(examples,
-                        "get " + std::to_string(lim) + " rows from " + t.name,
-                        "select * from " + table + " limit " + std::to_string(lim));
-            produced++;
-        } else {
-            add_example(examples,
-                        "list all " + t.name,
-                        "select * from " + table);
-            produced++;
-        }
-    }
-}
-
 int main(int argc, char** argv) {
-    std::string host = "localhost";
+    auto env_or = [](const char* name, const std::string& fallback) -> std::string {
+        const char* v = std::getenv(name);
+        return (v && v[0]) ? std::string(v) : fallback;
+    };
+
+    std::string host = env_or("AI_DB_HOST", "localhost");
     int port = 5432;
-    std::string dbname = "ai_db";
-    std::string user = "ai_user";
-    std::string password = "123";
+    std::string dbname = env_or("AI_DB_NAME", "ai_db");
+    std::string user = env_or("AI_DB_USER", "ai_user");
+    std::string password = env_or("AI_DB_PASSWORD", "");
     std::string schema = "bookings";
     std::string out_path = "training_data/bookings_nl_to_sql_from_db.json";
     int examples_target = 100000;
@@ -635,7 +539,7 @@ int main(int argc, char** argv) {
         std::cout << "Examples: " << writer.count << std::endl;
         std::cout << "Per-table examples: " << per_table << std::endl;
 
-        std::_Exit(0);
+        return 0;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Опции компиляции
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -O2")
 
-# Поиск зависимостей
+# ─── Зависимости ───
+
+# PostgreSQL
 find_package(PostgreSQL QUIET)
 if(NOT PostgreSQL_FOUND)
     message(WARNING "PostgreSQL not found via find_package, trying pg_config fallback")
@@ -34,9 +36,8 @@ else()
     include_directories(${PostgreSQL_INCLUDE_DIRS})
 endif()
 
-# Попытка найти nlohmann_json
+# nlohmann_json
 find_package(nlohmann_json 3.2.0 QUIET)
-
 if(NOT nlohmann_json_FOUND)
     message(STATUS "nlohmann_json not found via find_package, using include path")
     include_directories(/usr/include /usr/local/include)
@@ -46,30 +47,52 @@ endif()
 set(Torch_DIR "${PROJECT_SOURCE_DIR}/libtorch/share/cmake/Torch")
 set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libtorch;${CMAKE_PREFIX_PATH}")
 
-# Some LibTorch CUDA distributions bundle NVTX (nvToolsExt) inside libtorch/lib,
-# but CMake's CUDAToolkit package may not expose CUDA::nvToolsExt on some distros.
-# Predefine it so Torch's CUDA config doesn't hard-fail during find_package(Torch).
 if(NOT TARGET CUDA::nvToolsExt AND EXISTS "${PROJECT_SOURCE_DIR}/libtorch/lib/libnvToolsExt.so")
     add_library(CUDA::nvToolsExt SHARED IMPORTED)
     set_target_properties(CUDA::nvToolsExt PROPERTIES
         IMPORTED_LOCATION "${PROJECT_SOURCE_DIR}/libtorch/lib/libnvToolsExt.so"
     )
 endif()
+
 find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 message(STATUS "Found Torch: ${TORCH_VERSION}")
 
-# Prefer local libtorch at runtime
+# Runtime library paths
 set(CMAKE_BUILD_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib")
 set(CMAKE_INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-# Включение директорий
 include_directories(
     ${PROJECT_SOURCE_DIR}
     ${TORCH_INCLUDE_DIRS}
 )
 
-# Исходные файлы
+# ─── Helper: collect common link libraries ───
+
+set(TORCH_LINK_TARGET "")
+if(TARGET Torch::Torch)
+    set(TORCH_LINK_TARGET Torch::Torch)
+else()
+    set(TORCH_LINK_TARGET "${TORCH_LIBRARIES}")
+endif()
+
+set(JSON_LINK_TARGET "")
+if(nlohmann_json_FOUND)
+    set(JSON_LINK_TARGET nlohmann_json::nlohmann_json)
+endif()
+
+# ─── ML sources (shared between main app and train_model) ───
+
+set(ML_SOURCES
+    src/ml/ModelTrainer.cpp
+    src/ml/Seq2SeqModel.cpp
+    src/ml/Vocabulary.cpp
+    src/utils/Logger.cpp
+)
+
+# ─── Main executable ───
+
 set(SOURCES
     src/main.cpp
     src/core/Agent.cpp
@@ -78,104 +101,48 @@ set(SOURCES
     src/core/ResponseParser.cpp
     src/nlprocessor/NLProcessor.cpp
     src/config/Config.cpp
-    src/utils/Logger.cpp
-    # ML (Neural network) sources
-    src/ml/ModelTrainer.cpp
-    src/ml/Seq2SeqModel.cpp
-    src/ml/Vocabulary.cpp
+    ${ML_SOURCES}
 )
 
-# Создание исполняемого файла
 add_executable(${PROJECT_NAME} ${SOURCES})
-
-# Линковка библиотек
-if(nlohmann_json_FOUND)
-    if(TARGET Torch::Torch)
-        target_link_libraries(${PROJECT_NAME} PRIVATE pqxx pq nlohmann_json::nlohmann_json pthread Torch::Torch)
-    else()
-        target_link_libraries(${PROJECT_NAME} PRIVATE pqxx pq nlohmann_json::nlohmann_json pthread "${TORCH_LIBRARIES}")
-    endif()
-else()
-    if(TARGET Torch::Torch)
-        target_link_libraries(${PROJECT_NAME} PRIVATE pqxx pq pthread Torch::Torch)
-    else()
-        target_link_libraries(${PROJECT_NAME} PRIVATE pqxx pq pthread "${TORCH_LIBRARIES}")
-    endif()
-endif()
-
-# Убедимся, что используем флаги Torch
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+target_link_libraries(${PROJECT_NAME} PRIVATE pqxx pq ${JSON_LINK_TARGET} pthread ${TORCH_LINK_TARGET})
 set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     BUILD_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
     INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
 )
 
-# Таргет для обучения модели
-add_executable(train_model train_model.cpp
-    src/ml/ModelTrainer.cpp
-    src/ml/Seq2SeqModel.cpp
-    src/ml/Vocabulary.cpp
-    src/utils/Logger.cpp
-)
+# ─── Training executable ───
 
-if(nlohmann_json_FOUND)
-    if(TARGET Torch::Torch)
-        target_link_libraries(train_model PRIVATE nlohmann_json::nlohmann_json Torch::Torch pthread)
-    else()
-        target_link_libraries(train_model PRIVATE nlohmann_json::nlohmann_json "${TORCH_LIBRARIES}" pthread)
-    endif()
-else()
-    if(TARGET Torch::Torch)
-        target_link_libraries(train_model PRIVATE Torch::Torch pthread)
-    else()
-        target_link_libraries(train_model PRIVATE "${TORCH_LIBRARIES}" pthread)
-    endif()
-endif()
-
-target_compile_features(train_model PRIVATE cxx_std_17)
-set_property(TARGET train_model PROPERTY CXX_STANDARD 17)
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set_target_properties(train_model PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+add_executable(train_model train_model.cpp ${ML_SOURCES})
+target_link_libraries(train_model PRIVATE ${JSON_LINK_TARGET} ${TORCH_LINK_TARGET} pthread)
 set_target_properties(train_model PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     BUILD_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
     INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
 )
 
-# Test model executable
+# ─── Test model executable ───
+
 add_executable(test_model test_model.cpp)
 target_include_directories(test_model PRIVATE ${CMAKE_SOURCE_DIR}/src)
-#target_link_libraries(test_model PRIVATE ${PROJECT_NAME} ${PostgreSQL_LIBRARIES})
-
-if(TARGET Torch::Torch)
-    target_link_libraries(test_model PRIVATE Torch::Torch pthread)
-else()
-    target_link_libraries(test_model PRIVATE "${TORCH_LIBRARIES}" pthread)
-endif()
-
-target_compile_features(test_model PRIVATE cxx_std_17)
-set_target_properties(test_model PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+target_link_libraries(test_model PRIVATE ${TORCH_LINK_TARGET} pthread)
 set_target_properties(test_model PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     BUILD_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
     INSTALL_RPATH "${PROJECT_SOURCE_DIR}/libtorch/lib"
 )
 
+# ─── Dataset generator ───
 
-
-
-# Dataset generator for bookings DB (connects to PostgreSQL and samples real values)
 add_executable(generate_bookings_dataset_from_db
     training_data/generate_bookings_dataset_from_db.cpp
 )
+target_link_libraries(generate_bookings_dataset_from_db PRIVATE pqxx pq ${JSON_LINK_TARGET} pthread)
+set_target_properties(generate_bookings_dataset_from_db PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
 
-if(nlohmann_json_FOUND)
-    target_link_libraries(generate_bookings_dataset_from_db PRIVATE pqxx pq nlohmann_json::nlohmann_json pthread)
-else()
-    target_link_libraries(generate_bookings_dataset_from_db PRIVATE pqxx pq pthread)
-endif()
+# ─── Install ───
 
-set_target_properties(generate_bookings_dataset_from_db PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-# Установка
 install(TARGETS ${PROJECT_NAME} train_model test_model generate_bookings_dataset_from_db DESTINATION bin)

@@ -6,6 +6,7 @@
 #include <chrono>
 #include <numeric>
 #include <random>
+#include <cmath>
 
 using json = nlohmann::json;
 
@@ -37,6 +38,19 @@ void MLModelTrainer::setModelDims(int embedding_dim, int hidden_dim) {
     hidden_dim_ = hidden_dim;
 }
 
+void MLModelTrainer::setDropout(float dropout_p) {
+    dropout_p_ = std::clamp(dropout_p, 0.0f, 0.9f);
+}
+
+void MLModelTrainer::setTeacherForcingRatio(float start, float end) {
+    tf_start_ = std::clamp(start, 0.0f, 1.0f);
+    tf_end_ = std::clamp(end, 0.0f, 1.0f);
+}
+
+void MLModelTrainer::setBeamWidth(int width) {
+    beam_width_ = std::max(0, width);
+}
+
 void MLModelTrainer::setDevice(torch::Device device) {
     if (device.is_cuda() && !torch::cuda::is_available()) {
         std::cerr << "CUDA requested but not available. Falling back to CPU." << std::endl;
@@ -60,10 +74,10 @@ bool MLModelTrainer::loadDataset(const std::string& path) {
         std::cerr << "Failed to open dataset: " << path << std::endl;
         return false;
     }
-    
+
     json data;
     file >> data;
-    
+
     dataset_.clear();
     for (const auto& example : data["examples"]) {
         TrainingExample ex;
@@ -71,25 +85,25 @@ bool MLModelTrainer::loadDataset(const std::string& path) {
         ex.sql_query = example["sql"];
         dataset_.push_back(ex);
     }
-    
+
     std::cout << "Loaded " << dataset_.size() << " examples" << std::endl;
-    
+
     buildVocabularies();
-    
+
     model_ = std::make_unique<Seq2SeqModel>(
-        nl_vocab_.size(), 
-        sql_vocab_.size(), 
+        nl_vocab_.size(),
+        sql_vocab_.size(),
         embedding_dim_,
         hidden_dim_,
+        dropout_p_,
         device_
     );
-    
+
     return true;
 }
 
 void MLModelTrainer::buildVocabularies() {
     for (const auto& example : dataset_) {
-        // Learn vocabulary from raw sentences
         nl_vocab_.addSentence(example.nl_query);
         sql_vocab_.addSentence(example.sql_query);
     }
@@ -100,25 +114,26 @@ void MLModelTrainer::buildVocabularies() {
     if (sql_vocab_max_ > 0) {
         sql_vocab_.limitSize(sql_vocab_max_);
     }
-    
+
     std::cout << "NL Vocabulary size: " << nl_vocab_.size() << std::endl;
     std::cout << "SQL Vocabulary size: " << sql_vocab_.size() << std::endl;
 }
 
 std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareData(
     const TrainingExample& example) {
-    
+
     auto nl_indices = nl_vocab_.encode(example.nl_query);
     auto sql_indices = sql_vocab_.encode(example.sql_query);
-    
+
     auto src = torch::tensor(nl_indices, torch::kLong).unsqueeze(1);
     auto trg = torch::tensor(sql_indices, torch::kLong).unsqueeze(1);
-    
+
     return std::make_tuple(src, trg);
 }
 
-std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareBatch(const std::vector<size_t>& indices) {
-    // Build variable-length sequences for a batch, then pad to max length.
+std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareBatch(
+    const std::vector<size_t>& indices) {
+
     std::vector<std::vector<int>> src_seqs;
     std::vector<std::vector<int>> trg_seqs;
     src_seqs.reserve(indices.size());
@@ -138,17 +153,22 @@ std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareBatch(const std:
 
     const int64_t batch = static_cast<int64_t>(indices.size());
 
+    // Pre-fill with PAD tokens
     auto src = torch::full({max_src_len, batch}, Vocabulary::PAD_TOKEN, torch::kLong);
     auto trg = torch::full({max_trg_len, batch}, Vocabulary::PAD_TOKEN, torch::kLong);
+
+    // Fill using accessor for better performance than index_put_
+    auto src_acc = src.accessor<int64_t, 2>();
+    auto trg_acc = trg.accessor<int64_t, 2>();
 
     for (int64_t b = 0; b < batch; ++b) {
         const auto& s = src_seqs[static_cast<size_t>(b)];
         const auto& t = trg_seqs[static_cast<size_t>(b)];
         for (int64_t i = 0; i < static_cast<int64_t>(s.size()); ++i) {
-            src.index_put_({i, b}, s[static_cast<size_t>(i)]);
+            src_acc[i][b] = s[static_cast<size_t>(i)];
         }
         for (int64_t i = 0; i < static_cast<int64_t>(t.size()); ++i) {
-            trg.index_put_({i, b}, t[static_cast<size_t>(i)]);
+            trg_acc[i][b] = t[static_cast<size_t>(i)];
         }
     }
 
@@ -160,42 +180,46 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
         std::cerr << "Model not initialized" << std::endl;
         return false;
     }
-    
+
     model_->train();
-    
-    torch::optim::Adam optimizer(
-        std::vector<torch::Tensor>{},
-        torch::optim::AdamOptions(learning_rate)
-    );
-    
-    // Add encoder and decoder parameters
+
+    // Collect all parameters properly before creating optimizer
+    std::vector<torch::Tensor> all_params;
     for (const auto& p : model_->encoder_->parameters()) {
-        optimizer.param_groups()[0].params().push_back(p);
+        all_params.push_back(p);
     }
     for (const auto& p : model_->decoder_->parameters()) {
-        optimizer.param_groups()[0].params().push_back(p);
+        all_params.push_back(p);
     }
-    
+
+    torch::optim::Adam optimizer(all_params, torch::optim::AdamOptions(learning_rate));
+
     auto criterion = torch::nn::CrossEntropyLoss(
         torch::nn::CrossEntropyLossOptions().ignore_index(Vocabulary::PAD_TOKEN)
     );
-    // Ensure the loss computation happens on the same device as the model (CPU/GPU)
     criterion->to(model_->device_);
-    
+
     const int64_t total_examples = static_cast<int64_t>(dataset_.size());
     const int64_t bs = std::max<int64_t>(1, static_cast<int64_t>(batch_size_));
     const int64_t total_batches = (total_examples + bs - 1) / bs;
-    const int64_t log_interval = std::max<int64_t>(1, total_batches / 50); // ~50 updates per epoch
-    
+    const int64_t log_interval = std::max<int64_t>(1, total_batches / 50);
+
     for (int epoch = 0; epoch < epochs; epoch++) {
         float total_loss = 0.0f;
         int64_t batch_count = 0;
         auto epoch_start = std::chrono::steady_clock::now();
-        
-        // Progress bar header
-        std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs << " [";
+
+        // Teacher forcing ratio: linear decay from tf_start_ to tf_end_
+        float tf_ratio = tf_start_;
+        if (epochs > 1) {
+            tf_ratio = tf_start_ - (tf_start_ - tf_end_) *
+                       static_cast<float>(epoch) / static_cast<float>(epochs - 1);
+        }
+
         int bar_width = 50;
-        
+        std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs
+                  << " (tf=" << tf_ratio << ") [";
+
         std::vector<size_t> order(static_cast<size_t>(total_examples));
         std::iota(order.begin(), order.end(), static_cast<size_t>(0));
         std::mt19937 rng(static_cast<std::mt19937::result_type>(epoch + 1337));
@@ -214,7 +238,7 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
 
             optimizer.zero_grad();
 
-            auto outputs = model_->forward(src, trg);
+            auto outputs = model_->forward(src, trg, tf_ratio);
             auto outputs_slice = outputs.slice(0, 1);
             auto trg_slice = trg.slice(0, 1);
 
@@ -223,6 +247,10 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
 
             auto loss = criterion(logits, targets);
             loss.backward();
+
+            // Gradient clipping to prevent exploding gradients
+            torch::nn::utils::clip_grad_norm_(all_params, 1.0);
+
             optimizer.step();
 
             total_loss += loss.item<float>();
@@ -231,7 +259,8 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
             if (b % log_interval == 0 || b == total_batches - 1) {
                 float progress = static_cast<float>(b + 1) / static_cast<float>(total_batches);
                 int pos = static_cast<int>(bar_width * progress);
-                std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs << " [";
+                std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs
+                          << " (tf=" << tf_ratio << ") [";
                 for (int i = 0; i < bar_width; ++i) {
                     if (i < pos) std::cout << "=";
                     else if (i == pos) std::cout << ">";
@@ -240,30 +269,31 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
                 std::cout << "] " << int(progress * 100.0) << "%" << std::flush;
             }
         }
-        
-        // Epoch summary
+
         auto epoch_end = std::chrono::steady_clock::now();
         auto epoch_duration = std::chrono::duration_cast<std::chrono::seconds>(epoch_end - epoch_start);
         float avg_loss = (batch_count > 0) ? (total_loss / static_cast<float>(batch_count)) : 0.0f;
-        
-        std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs << " [";
+
+        std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs
+                  << " (tf=" << tf_ratio << ") [";
         for (int i = 0; i < bar_width; ++i) std::cout << "=";
         std::cout << "] " << "100% " << "(" << epoch_duration.count() << "s)"
                   << " Loss: " << avg_loss << std::endl;
-        
+
         // Show example predictions every 5 epochs
         if ((epoch + 1) % 5 == 0 && !dataset_.empty()) {
             std::cout << "\nExample predictions after epoch " << (epoch + 1) << ":\n";
             for (int i = 0; i < std::min(2, static_cast<int>(dataset_.size())); i++) {
                 const auto& ex = dataset_[static_cast<size_t>(i)];
-                auto pred = predict(ex.nl_query);
+                auto pred = predictWithConfidence(ex.nl_query);
                 std::cout << "  NL: " << ex.nl_query << "\n";
-                std::cout << "  Pred SQL: " << pred << "\n";
+                std::cout << "  Pred SQL: " << pred.sql
+                          << " (confidence: " << (pred.confidence * 100) << "%)\n";
                 std::cout << "  True SQL: " << ex.sql_query << "\n\n";
             }
         }
     }
-    
+
     return true;
 }
 
@@ -271,10 +301,10 @@ bool MLModelTrainer::save(const std::string& model_path) {
     if (!model_->save(model_path)) {
         return false;
     }
-    
+
     nl_vocab_.save(model_path + "_nl_vocab.txt");
     sql_vocab_.save(model_path + "_sql_vocab.txt");
-    
+
     return true;
 }
 
@@ -283,34 +313,45 @@ bool MLModelTrainer::load(const std::string& model_path) {
         !sql_vocab_.load(model_path + "_sql_vocab.txt")) {
         return false;
     }
-    
+
     model_ = std::make_unique<Seq2SeqModel>(
-        nl_vocab_.size(), 
+        nl_vocab_.size(),
         sql_vocab_.size(),
         embedding_dim_,
         hidden_dim_,
+        dropout_p_,
         device_
     );
-    
+
     return model_->load(model_path);
 }
 
 std::string MLModelTrainer::predict(const std::string& nl_query) {
-    if (!model_) {
-        return "";
-    }
+    return predictWithConfidence(nl_query).sql;
+}
 
-    const bool was_training = model_->encoder_->is_training() && model_->decoder_->is_training();
+PredictResult MLModelTrainer::predictWithConfidence(const std::string& nl_query) {
+    PredictResult result;
+    result.confidence = 0.0f;
+
+    if (!model_) {
+        return result;
+    }
 
     torch::NoGradGuard no_grad;
     model_->eval();
 
     auto nl_indices = nl_vocab_.encode(nl_query);
-    auto sql_indices = model_->predict(nl_indices);
 
-    if (was_training) {
-        model_->train();
+    PredictionResult pred;
+    if (beam_width_ > 1) {
+        pred = model_->beam_search(nl_indices, beam_width_);
+    } else {
+        pred = model_->predict(nl_indices);
     }
 
-    return sql_vocab_.decode(sql_indices);
+    result.sql = sql_vocab_.decode(pred.tokens);
+    result.confidence = pred.confidence;
+
+    return result;
 }

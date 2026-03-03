@@ -8,7 +8,9 @@ int main(int argc, char** argv) {
     
     MLModelTrainer trainer;
     
-    // CLI: train_model [epochs] [lr] [--resume] [--cpu|--cuda|--auto] [--data PATH] [--out PREFIX] [--tiny500k] [--emb N] [--hid N] [--batch N] [--nl-vocab N] [--sql-vocab N]
+    // CLI: train_model [epochs] [lr] [--resume] [--cpu|--cuda|--auto] [--data PATH] [--out PREFIX]
+    //      [--tiny500k] [--emb N] [--hid N] [--batch N] [--nl-vocab N] [--sql-vocab N]
+    //      [--dropout F] [--beam N] [--tf-start F] [--tf-end F]
     int epochs = 50;
     float lr = 0.001f;
     bool resume = false;
@@ -21,6 +23,10 @@ int main(int argc, char** argv) {
     int batch_size = 64;
     int nl_vocab_max = 0;
     int sql_vocab_max = 0;
+    float dropout = 0.1f;
+    int beam_width = 3;
+    float tf_start = 1.0f;
+    float tf_end = 0.5f;
 
     auto is_number = [](const std::string& s) -> bool {
         if (s.empty()) return false;
@@ -94,6 +100,18 @@ int main(int argc, char** argv) {
         if (std::string(argv[i]) == "--sql-vocab" && i + 1 < argc) {
             sql_vocab_max = std::stoi(argv[++i]);
         }
+        if (std::string(argv[i]) == "--dropout" && i + 1 < argc) {
+            dropout = std::stof(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--beam" && i + 1 < argc) {
+            beam_width = std::stoi(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--tf-start" && i + 1 < argc) {
+            tf_start = std::stof(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--tf-end" && i + 1 < argc) {
+            tf_end = std::stof(argv[++i]);
+        }
     }
 
     if (device_mode == DeviceMode::CPU) {
@@ -114,6 +132,9 @@ int main(int argc, char** argv) {
 
     trainer.setBatchSize(batch_size);
     trainer.setVocabLimits(nl_vocab_max, sql_vocab_max);
+    trainer.setDropout(dropout);
+    trainer.setBeamWidth(beam_width);
+    trainer.setTeacherForcingRatio(tf_start, tf_end);
     
     std::cout << "Loading dataset..." << std::endl;
     if (!trainer.loadDataset(data_path)) {

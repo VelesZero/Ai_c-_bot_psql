@@ -78,14 +78,14 @@ DatabaseConnector::QueryResult DatabaseConnector::executeQuery(const std::string
         pqxx::result res = txn.exec(query);
         
         // Получение имен колонок
-        for (size_t i = 0; i < res.columns(); ++i) {
+        for (int i = 0; i < res.columns(); ++i) {
             result.columns.push_back(res.column_name(i));
         }
-        
+
         // Получение данных
         for (const auto& row : res) {
             std::vector<std::string> rowData;
-            for (size_t i = 0; i < row.size(); ++i) {
+            for (int i = 0; i < row.size(); ++i) {
                 rowData.push_back(row[i].is_null() ? "NULL" : row[i].c_str());
             }
             result.rows.push_back(rowData);
@@ -126,25 +126,33 @@ std::vector<std::string> DatabaseConnector::getTableNames() {
     return tables;
 }
 
-std::map<std::string, std::vector<std::string>> 
+std::map<std::string, std::vector<std::string>>
 DatabaseConnector::getTableSchema(const std::string& tableName) {
     std::map<std::string, std::vector<std::string>> schema;
-    
-    std::string query = 
-        "SELECT column_name, data_type, is_nullable "
-        "FROM information_schema.columns "
-        "WHERE table_name = '" + tableName + "' "
-        "ORDER BY ordinal_position";
-    
-    auto result = executeQuery(query);
-    
-    if (result.success) {
-        for (const auto& row : result.rows) {
+
+    if (!isConnected()) {
+        Logger::getInstance().error("Not connected to database");
+        return schema;
+    }
+
+    try {
+        pqxx::work txn(*connection_);
+        pqxx::result res = txn.exec(
+            "SELECT column_name, data_type, is_nullable "
+            "FROM information_schema.columns "
+            "WHERE table_name = $1 "
+            "ORDER BY ordinal_position",
+            pqxx::params{tableName});
+
+        for (const auto& row : res) {
             if (row.size() >= 3) {
-                schema[row[0]] = {row[1], row[2]};
+                schema[row[0].c_str()] = {row[1].c_str(), row[2].c_str()};
             }
         }
+        txn.commit();
+    } catch (const std::exception& e) {
+        Logger::getInstance().error("getTableSchema failed: " + std::string(e.what()));
     }
-    
+
     return schema;
 }

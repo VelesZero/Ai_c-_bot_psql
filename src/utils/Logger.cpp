@@ -57,8 +57,11 @@ void Logger::log(LogLevel level, const std::string& message) {
     std::cout << logMessage << std::endl;
     
     if (logFile_.is_open()) {
-        logFile_ << logMessage << std::endl;
-        logFile_.flush();
+        logFile_ << logMessage << '\n';
+        // Flush only for warnings and above to reduce I/O overhead
+        if (level >= LogLevel::WARNING) {
+            logFile_.flush();
+        }
     }
 }
 
