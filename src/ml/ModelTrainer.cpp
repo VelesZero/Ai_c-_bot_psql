@@ -7,6 +7,7 @@
 #include <numeric>
 #include <random>
 #include <cmath>
+#include <iomanip>
 
 using json = nlohmann::json;
 
@@ -89,6 +90,7 @@ bool MLModelTrainer::loadDataset(const std::string& path) {
     std::cout << "Loaded " << dataset_.size() << " examples" << std::endl;
 
     buildVocabularies();
+    preEncodeDataset();
 
     model_ = std::make_unique<Seq2SeqModel>(
         nl_vocab_.size(),
@@ -119,6 +121,19 @@ void MLModelTrainer::buildVocabularies() {
     std::cout << "SQL Vocabulary size: " << sql_vocab_.size() << std::endl;
 }
 
+void MLModelTrainer::preEncodeDataset() {
+    const size_t n = dataset_.size();
+    encoded_nl_.resize(n);
+    encoded_sql_.resize(n);
+
+    std::cout << "Pre-encoding " << n << " examples..." << std::flush;
+    for (size_t i = 0; i < n; ++i) {
+        encoded_nl_[i] = nl_vocab_.encode(dataset_[i].nl_query);
+        encoded_sql_[i] = sql_vocab_.encode(dataset_[i].sql_query);
+    }
+    std::cout << " done." << std::endl;
+}
+
 std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareData(
     const TrainingExample& example) {
 
@@ -134,21 +149,12 @@ std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareData(
 std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareBatch(
     const std::vector<size_t>& indices) {
 
-    std::vector<std::vector<int>> src_seqs;
-    std::vector<std::vector<int>> trg_seqs;
-    src_seqs.reserve(indices.size());
-    trg_seqs.reserve(indices.size());
-
     int64_t max_src_len = 0;
     int64_t max_trg_len = 0;
 
     for (size_t idx : indices) {
-        const auto& ex = dataset_[idx];
-        src_seqs.push_back(nl_vocab_.encode(ex.nl_query));
-        trg_seqs.push_back(sql_vocab_.encode(ex.sql_query));
-
-        max_src_len = std::max<int64_t>(max_src_len, static_cast<int64_t>(src_seqs.back().size()));
-        max_trg_len = std::max<int64_t>(max_trg_len, static_cast<int64_t>(trg_seqs.back().size()));
+        max_src_len = std::max<int64_t>(max_src_len, static_cast<int64_t>(encoded_nl_[idx].size()));
+        max_trg_len = std::max<int64_t>(max_trg_len, static_cast<int64_t>(encoded_sql_[idx].size()));
     }
 
     const int64_t batch = static_cast<int64_t>(indices.size());
@@ -162,8 +168,8 @@ std::tuple<torch::Tensor, torch::Tensor> MLModelTrainer::prepareBatch(
     auto trg_acc = trg.accessor<int64_t, 2>();
 
     for (int64_t b = 0; b < batch; ++b) {
-        const auto& s = src_seqs[static_cast<size_t>(b)];
-        const auto& t = trg_seqs[static_cast<size_t>(b)];
+        const auto& s = encoded_nl_[indices[static_cast<size_t>(b)]];
+        const auto& t = encoded_sql_[indices[static_cast<size_t>(b)]];
         for (int64_t i = 0; i < static_cast<int64_t>(s.size()); ++i) {
             src_acc[i][b] = s[static_cast<size_t>(i)];
         }
@@ -202,7 +208,7 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
     const int64_t total_examples = static_cast<int64_t>(dataset_.size());
     const int64_t bs = std::max<int64_t>(1, static_cast<int64_t>(batch_size_));
     const int64_t total_batches = (total_examples + bs - 1) / bs;
-    const int64_t log_interval = std::max<int64_t>(1, total_batches / 50);
+    const int64_t log_interval = std::max<int64_t>(1, total_batches / 200);
 
     for (int epoch = 0; epoch < epochs; epoch++) {
         float total_loss = 0.0f;
@@ -259,6 +265,14 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
             if (b % log_interval == 0 || b == total_batches - 1) {
                 float progress = static_cast<float>(b + 1) / static_cast<float>(total_batches);
                 int pos = static_cast<int>(bar_width * progress);
+
+                auto now = std::chrono::steady_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - epoch_start).count();
+                int64_t eta = (progress > 0.001f)
+                    ? static_cast<int64_t>(static_cast<float>(elapsed) / progress * (1.0f - progress))
+                    : 0;
+                float batches_per_sec = (elapsed > 0) ? static_cast<float>(b + 1) / static_cast<float>(elapsed) : 0;
+
                 std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs
                           << " (tf=" << tf_ratio << ") [";
                 for (int i = 0; i < bar_width; ++i) {
@@ -266,7 +280,11 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
                     else if (i == pos) std::cout << ">";
                     else std::cout << " ";
                 }
-                std::cout << "] " << int(progress * 100.0) << "%" << std::flush;
+                std::cout << "] " << int(progress * 100.0) << "%"
+                          << " " << (b + 1) << "/" << total_batches
+                          << " [" << elapsed << "s<" << eta << "s"
+                          << ", " << std::fixed << std::setprecision(1) << batches_per_sec << " bat/s]"
+                          << "   " << std::flush;
             }
         }
 

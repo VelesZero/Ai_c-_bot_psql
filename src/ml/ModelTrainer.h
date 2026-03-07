@@ -63,8 +63,13 @@ private:
     int beam_width_ = 3;
 
     void buildVocabularies();
+    void preEncodeDataset();
     std::tuple<torch::Tensor, torch::Tensor> prepareData(const TrainingExample& example);
     std::tuple<torch::Tensor, torch::Tensor> prepareBatch(const std::vector<size_t>& indices);
+
+    // Pre-encoded sequences (filled once, reused every epoch)
+    std::vector<std::vector<int>> encoded_nl_;
+    std::vector<std::vector<int>> encoded_sql_;
 };
 
 #endif
