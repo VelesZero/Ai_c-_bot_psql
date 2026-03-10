@@ -29,9 +29,16 @@ public:
     void setDropout(float dropout_p);
     void setTeacherForcingRatio(float start, float end);
     void setBeamWidth(int width);
+    void setValSplit(float split);
+    void setPatience(int patience);
+    void setWeightDecay(float wd);
+    void setLabelSmoothing(float ls);
+    void setNumLayers(int n);
 
     void setBatchSize(int batch_size);
+    void setGradAccumSteps(int steps);
     void setVocabLimits(int nl_vocab_max, int sql_vocab_max);
+    void setCheckpointEvery(int epochs, const std::string& prefix);
 
     bool loadDataset(const std::string& path);
     bool train(int epochs = 100, float learning_rate = 0.001);
@@ -52,15 +59,31 @@ private:
     int hidden_dim_;
     float dropout_p_ = 0.1f;
     int batch_size_ = 32;
+    int grad_accum_steps_ = 1;
     int nl_vocab_max_ = 0;
     int sql_vocab_max_ = 0;
 
     // Teacher forcing: linearly decays from tf_start_ to tf_end_ over epochs
     float tf_start_ = 1.0f;
-    float tf_end_ = 0.5f;
+    float tf_end_ = 0.0f;
 
     // Beam search width (0 = greedy)
     int beam_width_ = 3;
+
+    // Validation split and early stopping
+    float val_split_ = 0.1f;
+    int patience_ = 5;          // 0 = disabled
+
+    // Model depth
+    int num_layers_ = 2;
+
+    // Regularization
+    float weight_decay_ = 1e-5f;
+    float label_smoothing_ = 0.1f;
+
+    // Checkpoint: save every N epochs (0 = disabled)
+    int checkpoint_every_ = 0;
+    std::string checkpoint_prefix_;
 
     void buildVocabularies();
     void preEncodeDataset();

@@ -6,7 +6,6 @@
 #include <chrono>
 #include <numeric>
 #include <random>
-#include <cmath>
 #include <iomanip>
 
 using json = nlohmann::json;
@@ -22,6 +21,10 @@ void MLModelTrainer::setBatchSize(int batch_size) {
         return;
     }
     batch_size_ = batch_size;
+}
+
+void MLModelTrainer::setGradAccumSteps(int steps) {
+    grad_accum_steps_ = std::max(1, steps);
 }
 
 void MLModelTrainer::setVocabLimits(int nl_vocab_max, int sql_vocab_max) {
@@ -48,8 +51,33 @@ void MLModelTrainer::setTeacherForcingRatio(float start, float end) {
     tf_end_ = std::clamp(end, 0.0f, 1.0f);
 }
 
+void MLModelTrainer::setValSplit(float split) {
+    val_split_ = std::clamp(split, 0.0f, 0.5f);
+}
+
+void MLModelTrainer::setPatience(int patience) {
+    patience_ = std::max(0, patience);
+}
+
+void MLModelTrainer::setWeightDecay(float wd) {
+    weight_decay_ = std::max(0.0f, wd);
+}
+
+void MLModelTrainer::setLabelSmoothing(float ls) {
+    label_smoothing_ = std::clamp(ls, 0.0f, 0.5f);
+}
+
+void MLModelTrainer::setNumLayers(int n) {
+    num_layers_ = std::max(1, n);
+}
+
 void MLModelTrainer::setBeamWidth(int width) {
     beam_width_ = std::max(0, width);
+}
+
+void MLModelTrainer::setCheckpointEvery(int epochs, const std::string& prefix) {
+    checkpoint_every_ = std::max(0, epochs);
+    checkpoint_prefix_ = prefix;
 }
 
 void MLModelTrainer::setDevice(torch::Device device) {
@@ -97,6 +125,7 @@ bool MLModelTrainer::loadDataset(const std::string& path) {
         sql_vocab_.size(),
         embedding_dim_,
         hidden_dim_,
+        num_layers_,
         dropout_p_,
         device_
     );
@@ -187,34 +216,56 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
         return false;
     }
 
-    model_->train();
+    // --- Train / validation split ---
+    const size_t n = dataset_.size();
+    std::vector<size_t> all_indices(n);
+    std::iota(all_indices.begin(), all_indices.end(), 0);
+    {
+        std::mt19937 split_rng(42);
+        std::shuffle(all_indices.begin(), all_indices.end(), split_rng);
+    }
+    const size_t val_size = static_cast<size_t>(n * val_split_);
+    std::vector<size_t> val_indices(all_indices.begin(), all_indices.begin() + val_size);
+    std::vector<size_t> train_indices(all_indices.begin() + val_size, all_indices.end());
 
-    // Collect all parameters properly before creating optimizer
+    if (val_size > 0) {
+        std::cout << "Train: " << train_indices.size()
+                  << " | Val: " << val_size << " examples\n";
+    }
+
+    // --- Collect parameters ---
     std::vector<torch::Tensor> all_params;
-    for (const auto& p : model_->encoder_->parameters()) {
-        all_params.push_back(p);
-    }
-    for (const auto& p : model_->decoder_->parameters()) {
-        all_params.push_back(p);
-    }
+    for (const auto& p : model_->encoder_->parameters()) all_params.push_back(p);
+    for (const auto& p : model_->decoder_->parameters()) all_params.push_back(p);
 
-    torch::optim::Adam optimizer(all_params, torch::optim::AdamOptions(learning_rate));
+    torch::optim::Adam optimizer(all_params,
+        torch::optim::AdamOptions(learning_rate).weight_decay(weight_decay_));
 
     auto criterion = torch::nn::CrossEntropyLoss(
-        torch::nn::CrossEntropyLossOptions().ignore_index(Vocabulary::PAD_TOKEN)
+        torch::nn::CrossEntropyLossOptions()
+            .ignore_index(Vocabulary::PAD_TOKEN)
+            .label_smoothing(label_smoothing_)
     );
     criterion->to(model_->device_);
 
-    const int64_t total_examples = static_cast<int64_t>(dataset_.size());
+    const int64_t total_train = static_cast<int64_t>(train_indices.size());
     const int64_t bs = std::max<int64_t>(1, static_cast<int64_t>(batch_size_));
-    const int64_t total_batches = (total_examples + bs - 1) / bs;
+    const int64_t total_batches = (total_train + bs - 1) / bs;
     const int64_t log_interval = std::max<int64_t>(1, total_batches / 200);
+    const int bar_width = 50;
+
+    // --- Early stopping & LR scheduling state ---
+    float best_val_loss = std::numeric_limits<float>::infinity();
+    int patience_counter = 0;
+    int lr_patience_counter = 0;
+    const int lr_patience = 2;
+    const float lr_factor = 0.5f;
+    float current_lr = learning_rate;
+
+    // --- LR warmup: linear ramp over first 5% of batches in epoch 0 ---
+    const int64_t warmup_steps = std::max<int64_t>(1, total_batches * 5 / 100);
 
     for (int epoch = 0; epoch < epochs; epoch++) {
-        float total_loss = 0.0f;
-        int64_t batch_count = 0;
-        auto epoch_start = std::chrono::steady_clock::now();
-
         // Teacher forcing ratio: linear decay from tf_start_ to tf_end_
         float tf_ratio = tf_start_;
         if (epochs > 1) {
@@ -222,59 +273,71 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
                        static_cast<float>(epoch) / static_cast<float>(epochs - 1);
         }
 
-        int bar_width = 50;
-        std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs
-                  << " (tf=" << tf_ratio << ") [";
+        // --- Training loop ---
+        model_->train();
+        torch::Tensor loss_accum = torch::zeros({}, torch::TensorOptions().device(device_).dtype(torch::kFloat32));
+        int64_t batch_count = 0;
+        auto epoch_start = std::chrono::steady_clock::now();
 
-        std::vector<size_t> order(static_cast<size_t>(total_examples));
-        std::iota(order.begin(), order.end(), static_cast<size_t>(0));
-        std::mt19937 rng(static_cast<std::mt19937::result_type>(epoch + 1337));
-        std::shuffle(order.begin(), order.end(), rng);
+        std::vector<size_t> shuffled_train = train_indices;
+        {
+            std::mt19937 rng(static_cast<std::mt19937::result_type>(epoch + 1337));
+            std::shuffle(shuffled_train.begin(), shuffled_train.end(), rng);
+        }
+
+        const int64_t accum_steps = std::max<int64_t>(1, static_cast<int64_t>(grad_accum_steps_));
 
         for (int64_t b = 0; b < total_batches; ++b) {
             const int64_t start = b * bs;
-            const int64_t end = std::min<int64_t>(start + bs, total_examples);
+            const int64_t end = std::min<int64_t>(start + bs, total_train);
             std::vector<size_t> batch_indices;
             batch_indices.reserve(static_cast<size_t>(end - start));
             for (int64_t i = start; i < end; ++i) {
-                batch_indices.push_back(order[static_cast<size_t>(i)]);
+                batch_indices.push_back(shuffled_train[static_cast<size_t>(i)]);
             }
 
             auto [src, trg] = prepareBatch(batch_indices);
 
-            optimizer.zero_grad();
+            // LR warmup during first epoch
+            if (epoch == 0 && b < warmup_steps) {
+                float warmup_lr = learning_rate * static_cast<float>(b + 1) / static_cast<float>(warmup_steps);
+                for (auto& pg : optimizer.param_groups()) {
+                    static_cast<torch::optim::AdamOptions&>(pg.options()).lr(warmup_lr);
+                }
+                if (b == warmup_steps - 1) {
+                    current_lr = learning_rate;
+                }
+            }
+
+            if (b % accum_steps == 0) optimizer.zero_grad();
 
             auto outputs = model_->forward(src, trg, tf_ratio);
-            auto outputs_slice = outputs.slice(0, 1);
-            auto trg_slice = trg.slice(0, 1);
+            auto logits = outputs.slice(0, 1).reshape({-1, outputs.size(2)});
+            auto targets = trg.slice(0, 1).reshape({-1}).to(model_->device_);
 
-            auto logits = outputs_slice.reshape({-1, outputs.size(2)});
-            auto targets = trg_slice.reshape({-1}).to(model_->device_);
-
-            auto loss = criterion(logits, targets);
+            auto loss = criterion(logits, targets) / static_cast<float>(accum_steps);
             loss.backward();
 
-            // Gradient clipping to prevent exploding gradients
-            torch::nn::utils::clip_grad_norm_(all_params, 1.0);
+            const bool is_last_batch = (b == total_batches - 1);
+            if (((b + 1) % accum_steps == 0) || is_last_batch) {
+                torch::nn::utils::clip_grad_norm_(all_params, 1.0);
+                optimizer.step();
+            }
 
-            optimizer.step();
-
-            total_loss += loss.item<float>();
+            loss_accum.add_((loss * static_cast<float>(accum_steps)).detach());
             batch_count++;
 
             if (b % log_interval == 0 || b == total_batches - 1) {
                 float progress = static_cast<float>(b + 1) / static_cast<float>(total_batches);
                 int pos = static_cast<int>(bar_width * progress);
-
                 auto now = std::chrono::steady_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - epoch_start).count();
                 int64_t eta = (progress > 0.001f)
-                    ? static_cast<int64_t>(static_cast<float>(elapsed) / progress * (1.0f - progress))
-                    : 0;
-                float batches_per_sec = (elapsed > 0) ? static_cast<float>(b + 1) / static_cast<float>(elapsed) : 0;
+                    ? static_cast<int64_t>(static_cast<float>(elapsed) / progress * (1.0f - progress)) : 0;
+                float bps = (elapsed > 0) ? static_cast<float>(b + 1) / static_cast<float>(elapsed) : 0;
 
                 std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs
-                          << " (tf=" << tf_ratio << ") [";
+                          << " (tf=" << std::fixed << std::setprecision(2) << tf_ratio << ") [";
                 for (int i = 0; i < bar_width; ++i) {
                     if (i < pos) std::cout << "=";
                     else if (i == pos) std::cout << ">";
@@ -283,22 +346,89 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
                 std::cout << "] " << int(progress * 100.0) << "%"
                           << " " << (b + 1) << "/" << total_batches
                           << " [" << elapsed << "s<" << eta << "s"
-                          << ", " << std::fixed << std::setprecision(1) << batches_per_sec << " bat/s]"
-                          << "   " << std::flush;
+                          << ", " << std::fixed << std::setprecision(1) << bps << " bat/s]   "
+                          << std::flush;
             }
         }
 
-        auto epoch_end = std::chrono::steady_clock::now();
-        auto epoch_duration = std::chrono::duration_cast<std::chrono::seconds>(epoch_end - epoch_start);
-        float avg_loss = (batch_count > 0) ? (total_loss / static_cast<float>(batch_count)) : 0.0f;
+        auto epoch_duration = std::chrono::duration_cast<std::chrono::seconds>(
+            std::chrono::steady_clock::now() - epoch_start);
+        float train_loss = (batch_count > 0)
+            ? (loss_accum.item<float>() / static_cast<float>(batch_count)) : 0.0f;
 
+        // --- Validation loop ---
+        float val_loss = 0.0f;
+        if (!val_indices.empty()) {
+            model_->eval();
+            torch::NoGradGuard no_grad;
+            const int64_t val_total = static_cast<int64_t>(val_indices.size());
+            const int64_t val_batches = (val_total + bs - 1) / bs;
+            torch::Tensor val_accum = torch::zeros({}, torch::TensorOptions().device(device_).dtype(torch::kFloat32));
+            int64_t val_count = 0;
+
+            for (int64_t b = 0; b < val_batches; ++b) {
+                const int64_t start = b * bs;
+                const int64_t end = std::min<int64_t>(start + bs, val_total);
+                std::vector<size_t> batch_idx;
+                batch_idx.reserve(static_cast<size_t>(end - start));
+                for (int64_t i = start; i < end; ++i)
+                    batch_idx.push_back(val_indices[static_cast<size_t>(i)]);
+
+                auto [src, trg] = prepareBatch(batch_idx);
+                auto outputs = model_->forward(src, trg, 1.0f);
+                auto logits = outputs.slice(0, 1).reshape({-1, outputs.size(2)});
+                auto targets = trg.slice(0, 1).reshape({-1}).to(model_->device_);
+                val_accum.add_(criterion(logits, targets).detach());
+                val_count++;
+            }
+            val_loss = (val_count > 0) ? (val_accum.item<float>() / static_cast<float>(val_count)) : 0.0f;
+        }
+
+        // --- Epoch summary ---
         std::cout << "\rEpoch " << (epoch + 1) << "/" << epochs
-                  << " (tf=" << tf_ratio << ") [";
+                  << " (tf=" << std::fixed << std::setprecision(2) << tf_ratio << ") [";
         for (int i = 0; i < bar_width; ++i) std::cout << "=";
-        std::cout << "] " << "100% " << "(" << epoch_duration.count() << "s)"
-                  << " Loss: " << avg_loss << std::endl;
+        std::cout << "] 100% (" << epoch_duration.count() << "s)"
+                  << " | train: " << std::fixed << std::setprecision(4) << train_loss;
+        if (!val_indices.empty()) {
+            std::cout << " | val: " << val_loss;
+        }
+        std::cout << "\n";
 
-        // Show example predictions every 5 epochs
+        // --- Early stopping & LR scheduling (based on val loss) ---
+        if (!val_indices.empty()) {
+            if (val_loss < best_val_loss - 1e-4f) {
+                best_val_loss = val_loss;
+                patience_counter = 0;
+                lr_patience_counter = 0;
+            } else {
+                ++patience_counter;
+                ++lr_patience_counter;
+                if (lr_patience_counter >= lr_patience) {
+                    current_lr *= lr_factor;
+                    for (auto& pg : optimizer.param_groups()) {
+                        static_cast<torch::optim::AdamOptions&>(pg.options()).lr(current_lr);
+                    }
+                    lr_patience_counter = 0;
+                    std::cout << "  [LR reduced to " << current_lr << "]\n";
+                }
+                if (patience_ > 0 && patience_counter >= patience_) {
+                    std::cout << "  [Early stopping at epoch " << (epoch + 1) << "]\n";
+                    break;
+                }
+            }
+        }
+
+        // --- Periodic checkpoint ---
+        if (checkpoint_every_ > 0 && !checkpoint_prefix_.empty() &&
+            (epoch + 1) % checkpoint_every_ == 0) {
+            std::string ckpt = checkpoint_prefix_ + "_epoch" + std::to_string(epoch + 1);
+            if (save(ckpt)) std::cout << "  [checkpoint saved: " << ckpt << "]\n";
+            else            std::cerr << "  [checkpoint save failed]\n";
+        }
+
+        // --- Example predictions every 5 epochs ---
+        // BUG FIX: predictWithConfidence() calls model_->eval(), restore train mode after
         if ((epoch + 1) % 5 == 0 && !dataset_.empty()) {
             std::cout << "\nExample predictions after epoch " << (epoch + 1) << ":\n";
             for (int i = 0; i < std::min(2, static_cast<int>(dataset_.size())); i++) {
@@ -309,6 +439,7 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
                           << " (confidence: " << (pred.confidence * 100) << "%)\n";
                 std::cout << "  True SQL: " << ex.sql_query << "\n\n";
             }
+            model_->train();  // restore train mode (predictWithConfidence sets eval)
         }
     }
 
@@ -337,6 +468,7 @@ bool MLModelTrainer::load(const std::string& model_path) {
         sql_vocab_.size(),
         embedding_dim_,
         hidden_dim_,
+        num_layers_,
         dropout_p_,
         device_
     );

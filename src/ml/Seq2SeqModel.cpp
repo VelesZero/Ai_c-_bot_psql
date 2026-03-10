@@ -19,8 +19,8 @@ std::tuple<torch::Tensor, torch::Tensor> AttentionImpl::forward(
     // encoder_outputs: (src_len, batch, hidden_dim)
     int64_t src_len = encoder_outputs.size(0);
 
-    // Expand hidden to (src_len, batch, hidden_dim)
-    auto h = hidden.repeat({src_len, 1, 1});
+    // Expand hidden to (src_len, batch, hidden_dim) - zero-copy view
+    auto h = hidden.expand({src_len, -1, -1});
 
     // energy: (src_len, batch, hidden_dim)
     auto energy = torch::tanh(attn_->forward(torch::cat({h, encoder_outputs}, 2)));
@@ -38,14 +38,28 @@ std::tuple<torch::Tensor, torch::Tensor> AttentionImpl::forward(
 // ───────────────── Encoder ─────────────────
 
 EncoderImpl::EncoderImpl(int vocab_size, int embedding_dim, int hidden_dim,
-                         float dropout_p)
-    : hidden_dim_(hidden_dim) {
+                         int num_layers, bool bidirectional, float dropout_p)
+    : hidden_dim_(hidden_dim), num_layers_(num_layers), bidirectional_(bidirectional) {
 
     embedding_ = register_module("embedding",
         torch::nn::Embedding(vocab_size, embedding_dim));
 
-    lstm_ = register_module("lstm",
-        torch::nn::LSTM(torch::nn::LSTMOptions(embedding_dim, hidden_dim)));
+    auto lstm_opts = torch::nn::LSTMOptions(embedding_dim, hidden_dim)
+        .num_layers(num_layers)
+        .bidirectional(bidirectional)
+        .dropout(num_layers > 1 ? dropout_p : 0.0);
+    lstm_ = register_module("lstm", torch::nn::LSTM(lstm_opts));
+
+    if (bidirectional) {
+        // Project bidirectional encoder_outputs (hidden_dim*2) → hidden_dim
+        fc_proj_ = register_module("fc_proj",
+            torch::nn::Linear(hidden_dim * 2, hidden_dim));
+        // Project concatenated fwd+bwd hidden/cell per layer → decoder size
+        fc_hidden_ = register_module("fc_hidden",
+            torch::nn::Linear(hidden_dim * 2, hidden_dim));
+        fc_cell_ = register_module("fc_cell",
+            torch::nn::Linear(hidden_dim * 2, hidden_dim));
+    }
 
     dropout_ = register_module("dropout",
         torch::nn::Dropout(dropout_p));
@@ -58,10 +72,32 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> EncoderImpl::forward(
     // embedded: (src_len, batch, emb_dim)
 
     auto lstm_out = lstm_->forward(embedded);
-    auto outputs = std::get<0>(lstm_out);          // (src_len, batch, hidden_dim)
+    auto outputs = std::get<0>(lstm_out);
+    // outputs: (src_len, batch, hidden_dim * num_directions)
     auto hidden_tuple = std::get<1>(lstm_out);
-    auto hidden = std::get<0>(hidden_tuple);       // (1, batch, hidden_dim)
-    auto cell = std::get<1>(hidden_tuple);         // (1, batch, hidden_dim)
+    auto hidden = std::get<0>(hidden_tuple);
+    // hidden: (num_layers * num_directions, batch, hidden_dim)
+    auto cell = std::get<1>(hidden_tuple);
+
+    if (bidirectional_) {
+        // Project encoder_outputs: (src_len, batch, hidden_dim*2) → (src_len, batch, hidden_dim)
+        outputs = torch::tanh(fc_proj_->forward(outputs));
+
+        // hidden/cell shape: (num_layers*2, batch, hidden_dim)
+        // Reshape to (num_layers, 2, batch, hidden_dim), concat fwd+bwd → (num_layers, batch, hidden_dim*2)
+        int64_t batch_size = hidden.size(1);
+        auto h = hidden.view({num_layers_, 2, batch_size, hidden_dim_});
+        auto c = cell.view({num_layers_, 2, batch_size, hidden_dim_});
+
+        // Concatenate forward (idx 0) and backward (idx 1) along hidden dim
+        auto h_cat = torch::cat({h.select(1, 0), h.select(1, 1)}, /*dim=*/2);
+        // h_cat: (num_layers, batch, hidden_dim*2)
+        auto c_cat = torch::cat({c.select(1, 0), c.select(1, 1)}, /*dim=*/2);
+
+        hidden = torch::tanh(fc_hidden_->forward(h_cat));
+        // hidden: (num_layers, batch, hidden_dim)
+        cell = torch::tanh(fc_cell_->forward(c_cat));
+    }
 
     return {outputs, hidden, cell};
 }
@@ -69,8 +105,8 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> EncoderImpl::forward(
 // ───────────────── Decoder ─────────────────
 
 DecoderImpl::DecoderImpl(int vocab_size, int embedding_dim, int hidden_dim,
-                         float dropout_p)
-    : hidden_dim_(hidden_dim) {
+                         int num_layers, float dropout_p)
+    : hidden_dim_(hidden_dim), num_layers_(num_layers) {
 
     embedding_ = register_module("embedding",
         torch::nn::Embedding(vocab_size, embedding_dim));
@@ -79,8 +115,10 @@ DecoderImpl::DecoderImpl(int vocab_size, int embedding_dim, int hidden_dim,
         Attention(hidden_dim));
 
     // LSTM input: embedding + attention context
-    lstm_ = register_module("lstm",
-        torch::nn::LSTM(torch::nn::LSTMOptions(embedding_dim + hidden_dim, hidden_dim)));
+    auto lstm_opts = torch::nn::LSTMOptions(embedding_dim + hidden_dim, hidden_dim)
+        .num_layers(num_layers)
+        .dropout(num_layers > 1 ? dropout_p : 0.0);
+    lstm_ = register_module("lstm", torch::nn::LSTM(lstm_opts));
 
     // Output: LSTM hidden + attention context → vocab
     fc_ = register_module("fc",
@@ -94,11 +132,14 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor>
 DecoderImpl::forward(torch::Tensor input, torch::Tensor hidden,
                      torch::Tensor cell, torch::Tensor encoder_outputs) {
     // input: (batch,)
+    // hidden/cell: (num_layers, batch, hidden_dim)
     auto embedded = dropout_->forward(embedding_->forward(input.unsqueeze(0)));
     // embedded: (1, batch, emb_dim)
 
-    // Attention context from current hidden state
-    auto [context, attn_weights] = attention_->forward(hidden, encoder_outputs);
+    // Attention context from top-layer hidden state
+    auto top_hidden = hidden.narrow(0, num_layers_ - 1, 1);
+    // top_hidden: (1, batch, hidden_dim)
+    auto [context, attn_weights] = attention_->forward(top_hidden, encoder_outputs);
     // context: (1, batch, hidden_dim)
 
     // Concatenate embedding with context
@@ -108,7 +149,7 @@ DecoderImpl::forward(torch::Tensor input, torch::Tensor hidden,
     auto lstm_out = lstm_->forward(lstm_input, std::make_tuple(hidden, cell));
     auto output = std::get<0>(lstm_out);           // (1, batch, hidden_dim)
     auto hidden_tuple = std::get<1>(lstm_out);
-    auto h = std::get<0>(hidden_tuple);
+    auto h = std::get<0>(hidden_tuple);            // (num_layers, batch, hidden_dim)
     auto c = std::get<1>(hidden_tuple);
 
     // Predict: concat LSTM output with context
@@ -123,15 +164,19 @@ DecoderImpl::forward(torch::Tensor input, torch::Tensor hidden,
 
 Seq2SeqModel::Seq2SeqModel(int input_vocab_size, int output_vocab_size,
                            int embedding_dim, int hidden_dim,
-                           float dropout_p,
+                           int num_layers, float dropout_p,
                            torch::Device device)
-    : encoder_(Encoder(input_vocab_size, embedding_dim, hidden_dim, dropout_p)),
-      decoder_(Decoder(output_vocab_size, embedding_dim, hidden_dim, dropout_p)),
+    : encoder_(Encoder(input_vocab_size, embedding_dim, hidden_dim,
+                       num_layers, /*bidirectional=*/true, dropout_p)),
+      decoder_(Decoder(output_vocab_size, embedding_dim, hidden_dim,
+                       num_layers, dropout_p)),
       device_(torch::kCPU) {
 
     to(device);
-    std::cout << "Seq2SeqModel using device: "
-              << (device_.is_cuda() ? "CUDA" : "CPU") << std::endl;
+    std::cout << "Seq2SeqModel: layers=" << num_layers
+              << ", bidir_encoder, emb=" << embedding_dim
+              << ", hid=" << hidden_dim
+              << ", device=" << (device_.is_cuda() ? "CUDA" : "CPU") << std::endl;
 }
 
 void Seq2SeqModel::to(torch::Device device) {

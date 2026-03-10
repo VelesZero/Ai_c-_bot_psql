@@ -23,33 +23,39 @@ private:
 };
 TORCH_MODULE(Attention);
 
-// Encoder: bidirectional-ready single-layer LSTM with dropout
+// Encoder: bidirectional multi-layer LSTM with dropout
 class EncoderImpl : public torch::nn::Module {
 public:
     EncoderImpl(int vocab_size, int embedding_dim, int hidden_dim,
+                int num_layers = 2, bool bidirectional = true,
                 float dropout_p = 0.1);
 
     // Returns (encoder_outputs, hidden, cell)
-    //   encoder_outputs: (src_len, batch, hidden_dim)
-    //   hidden/cell:     (1, batch, hidden_dim)
+    //   encoder_outputs: (src_len, batch, hidden_dim)  — projected from hidden_dim*2 if bidir
+    //   hidden/cell:     (num_layers, batch, hidden_dim)
     std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> forward(torch::Tensor input);
 
 private:
     torch::nn::Embedding embedding_{nullptr};
     torch::nn::LSTM lstm_{nullptr};
     torch::nn::Dropout dropout_{nullptr};
+    torch::nn::Linear fc_proj_{nullptr};    // hidden_dim*2 → hidden_dim (encoder_outputs)
+    torch::nn::Linear fc_hidden_{nullptr};  // hidden_dim*2 → hidden_dim (per-layer h)
+    torch::nn::Linear fc_cell_{nullptr};    // hidden_dim*2 → hidden_dim (per-layer c)
     int hidden_dim_;
+    int num_layers_;
+    bool bidirectional_;
 };
 TORCH_MODULE(Encoder);
 
-// Decoder: LSTM + attention + dropout
+// Decoder: multi-layer LSTM + attention + dropout
 class DecoderImpl : public torch::nn::Module {
 public:
     DecoderImpl(int vocab_size, int embedding_dim, int hidden_dim,
-                float dropout_p = 0.1);
+                int num_layers = 2, float dropout_p = 0.1);
 
     // input:           (batch,)
-    // hidden/cell:     (1, batch, hidden_dim)
+    // hidden/cell:     (num_layers, batch, hidden_dim)
     // encoder_outputs: (src_len, batch, hidden_dim)
     // Returns (prediction, hidden, cell, attention_weights)
     std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> forward(
@@ -65,6 +71,7 @@ private:
     torch::nn::Linear fc_{nullptr};
     torch::nn::Dropout dropout_{nullptr};
     int hidden_dim_;
+    int num_layers_;
 };
 TORCH_MODULE(Decoder);
 
@@ -78,7 +85,7 @@ class Seq2SeqModel {
 public:
     Seq2SeqModel(int input_vocab_size, int output_vocab_size,
                  int embedding_dim = 256, int hidden_dim = 512,
-                 float dropout_p = 0.1,
+                 int num_layers = 2, float dropout_p = 0.1,
                  torch::Device device = torch::kCPU);
 
     // Training forward with teacher forcing

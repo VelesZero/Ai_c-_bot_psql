@@ -21,12 +21,19 @@ int main(int argc, char** argv) {
     int emb_dim = -1;
     int hid_dim = -1;
     int batch_size = 64;
+    int grad_accum = 1;
     int nl_vocab_max = 0;
     int sql_vocab_max = 0;
-    float dropout = 0.1f;
+    float dropout = 0.3f;
     int beam_width = 3;
     float tf_start = 1.0f;
-    float tf_end = 0.5f;
+    float tf_end = 0.0f;
+    int num_layers = 2;
+    int checkpoint_every = 0;
+    float val_split = 0.1f;
+    int patience = 5;
+    float weight_decay = 1e-5f;
+    float label_smoothing = 0.1f;
 
     auto is_number = [](const std::string& s) -> bool {
         if (s.empty()) return false;
@@ -94,6 +101,9 @@ int main(int argc, char** argv) {
         if (std::string(argv[i]) == "--batch" && i + 1 < argc) {
             batch_size = std::stoi(argv[++i]);
         }
+        if (std::string(argv[i]) == "--grad-accum" && i + 1 < argc) {
+            grad_accum = std::stoi(argv[++i]);
+        }
         if (std::string(argv[i]) == "--nl-vocab" && i + 1 < argc) {
             nl_vocab_max = std::stoi(argv[++i]);
         }
@@ -111,6 +121,24 @@ int main(int argc, char** argv) {
         }
         if (std::string(argv[i]) == "--tf-end" && i + 1 < argc) {
             tf_end = std::stof(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--checkpoint-every" && i + 1 < argc) {
+            checkpoint_every = std::stoi(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--val-split" && i + 1 < argc) {
+            val_split = std::stof(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--patience" && i + 1 < argc) {
+            patience = std::stoi(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--weight-decay" && i + 1 < argc) {
+            weight_decay = std::stof(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--label-smoothing" && i + 1 < argc) {
+            label_smoothing = std::stof(argv[++i]);
+        }
+        if (std::string(argv[i]) == "--layers" && i + 1 < argc) {
+            num_layers = std::stoi(argv[++i]);
         }
     }
 
@@ -131,11 +159,20 @@ int main(int argc, char** argv) {
     }
 
     trainer.setBatchSize(batch_size);
+    trainer.setGradAccumSteps(grad_accum);
     trainer.setVocabLimits(nl_vocab_max, sql_vocab_max);
     trainer.setDropout(dropout);
     trainer.setBeamWidth(beam_width);
     trainer.setTeacherForcingRatio(tf_start, tf_end);
-    
+    trainer.setValSplit(val_split);
+    trainer.setPatience(patience);
+    trainer.setWeightDecay(weight_decay);
+    trainer.setLabelSmoothing(label_smoothing);
+    trainer.setNumLayers(num_layers);
+    if (checkpoint_every > 0) {
+        trainer.setCheckpointEvery(checkpoint_every, out_prefix);
+    }
+
     std::cout << "Loading dataset..." << std::endl;
     if (!trainer.loadDataset(data_path)) {
         std::cerr << "Failed to load dataset" << std::endl;

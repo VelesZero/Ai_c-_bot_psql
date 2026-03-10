@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstdlib>
+#include <unistd.h>
 #include <fstream>
 #include <iostream>
 #include <random>
@@ -19,6 +20,17 @@ using json = nlohmann::json;
 static std::string to_lower_copy(std::string s) {
     std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
     return s;
+}
+
+// Truncate a string to at most max_bytes bytes without splitting a multi-byte UTF-8 character.
+static std::string utf8_truncate(const std::string& s, size_t max_bytes) {
+    if (s.size() <= max_bytes) return s;
+    size_t pos = max_bytes;
+    // Walk back if we're in the middle of a multi-byte sequence (continuation bytes start with 10xxxxxx)
+    while (pos > 0 && (static_cast<unsigned char>(s[pos]) & 0xC0) == 0x80) {
+        --pos;
+    }
+    return s.substr(0, pos);
 }
 
 // (definition of streaming generator is placed further below, after types and helpers)
@@ -216,6 +228,7 @@ struct JsonStreamWriter {
 
     void end() {
         out << "\n  ]\n}\n";
+        out.flush();
     }
 };
 
@@ -363,7 +376,7 @@ static void generate_for_table_stream(JsonStreamWriter& writer,
             if (vals.empty()) continue;
             std::string v = rnd_pick(rng, vals);
             std::string v_short = v;
-            if (v_short.size() > 24) v_short = v_short.substr(0, 24);
+            if (v_short.size() > 24) v_short = utf8_truncate(v_short, 24);
             const bool ru = (std::uniform_int_distribution<int>(0, 1)(rng) == 1);
             if (ru) {
                 write("покажи " + t.name + " где " + c.name + " равно " + v_short,
@@ -382,7 +395,7 @@ static void generate_for_table_stream(JsonStreamWriter& writer,
             if (vals.empty()) vals = sample_distinct_text(conn, t, c, 50, rng);
             if (vals.empty()) continue;
             std::string v = rnd_pick(rng, vals);
-            if (v.size() > 12) v = v.substr(0, 12);
+            if (v.size() > 12) v = utf8_truncate(v, 12);
             const bool ru = (std::uniform_int_distribution<int>(0, 1)(rng) == 1);
             if (ru) {
                 write("найди " + t.name + " где " + c.name + " содержит " + v,
@@ -539,7 +552,8 @@ int main(int argc, char** argv) {
         std::cout << "Examples: " << writer.count << std::endl;
         std::cout << "Per-table examples: " << per_table << std::endl;
 
-        return 0;
+        // Use _exit to avoid double-free in pqxx 7.10 connection destructor
+        _exit(0);
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
