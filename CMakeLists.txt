@@ -140,7 +140,7 @@ add_executable(generate_bookings_dataset_from_db
 )
 target_link_libraries(generate_bookings_dataset_from_db PRIVATE pqxx pq ${JSON_LINK_TARGET} pthread)
 set_target_properties(generate_bookings_dataset_from_db PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/training_data
 )
 
 # ─── Install ───

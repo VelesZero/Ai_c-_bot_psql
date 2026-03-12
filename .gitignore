@@ -30,7 +30,7 @@ training_data/*_1m.json
 training_data/*_1m_dataset.json
 libtorch/
 libtorch/
-libtorch_bak_cu118/
+2libtorch_bak_cu118/
 .cashe
 .cache/
 data_base/
