@@ -80,6 +80,10 @@ void MLModelTrainer::setCheckpointEvery(int epochs, const std::string& prefix) {
     checkpoint_prefix_ = prefix;
 }
 
+void MLModelTrainer::setAMP(bool enabled) {
+    use_amp_ = enabled;
+}
+
 void MLModelTrainer::setDevice(torch::Device device) {
     if (device.is_cuda() && !torch::cuda::is_available()) {
         std::cerr << "CUDA requested but not available. Falling back to CPU." << std::endl;
@@ -232,6 +236,9 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
         std::cout << "Train: " << train_indices.size()
                   << " | Val: " << val_size << " examples\n";
     }
+    if (use_amp_) {
+        std::cout << "Mixed precision (AMP): enabled (FP16)\n";
+    }
 
     // --- Collect parameters ---
     std::vector<torch::Tensor> all_params;
@@ -311,17 +318,66 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
 
             if (b % accum_steps == 0) optimizer.zero_grad();
 
-            auto outputs = model_->forward(src, trg, tf_ratio);
-            auto logits = outputs.slice(0, 1).reshape({-1, outputs.size(2)});
-            auto targets = trg.slice(0, 1).reshape({-1}).to(model_->device_);
+            torch::Tensor loss;
+            {
+                // Autocast scope: forward pass in FP16 where safe
+                if (use_amp_) {
+                    at::autocast::set_autocast_gpu_dtype(at::kHalf);
+                    at::autocast::set_enabled(true);
+                    at::autocast::increment_nesting();
+                }
 
-            auto loss = criterion(logits, targets) / static_cast<float>(accum_steps);
-            loss.backward();
+                auto outputs = model_->forward(src, trg, tf_ratio);
+                auto logits = outputs.slice(0, 1).reshape({-1, outputs.size(2)});
+                auto targets = trg.slice(0, 1).reshape({-1}).to(model_->device_);
+                loss = criterion(logits, targets) / static_cast<float>(accum_steps);
+
+                if (use_amp_) {
+                    at::autocast::decrement_nesting();
+                    at::autocast::set_enabled(false);
+                    at::autocast::clear_cache();
+                }
+            }
+
+            // Backward pass with gradient scaling for AMP
+            if (use_amp_) {
+                (loss * grad_scaler_.scale).backward();
+            } else {
+                loss.backward();
+            }
 
             const bool is_last_batch = (b == total_batches - 1);
             if (((b + 1) % accum_steps == 0) || is_last_batch) {
-                torch::nn::utils::clip_grad_norm_(all_params, 1.0);
-                optimizer.step();
+                if (use_amp_) {
+                    // Unscale gradients
+                    bool found_inf = false;
+                    for (auto& p : all_params) {
+                        if (p.grad().defined()) {
+                            p.mutable_grad().div_(grad_scaler_.scale);
+                            if (!found_inf &&
+                                torch::any(torch::isinf(p.grad()) | torch::isnan(p.grad())).item<bool>()) {
+                                found_inf = true;
+                            }
+                        }
+                    }
+                    if (!found_inf) {
+                        torch::nn::utils::clip_grad_norm_(all_params, 1.0);
+                        optimizer.step();
+                        grad_scaler_.step_count++;
+                        if (grad_scaler_.step_count >= grad_scaler_.growth_interval) {
+                            grad_scaler_.scale = std::min(grad_scaler_.scale * grad_scaler_.growth_factor, 65536.0f);
+                            grad_scaler_.step_count = 0;
+                        }
+                    } else {
+                        // Inf/NaN detected — shrink scale, skip step
+                        grad_scaler_.scale *= grad_scaler_.backoff_factor;
+                        grad_scaler_.step_count = 0;
+                        optimizer.zero_grad();
+                    }
+                } else {
+                    torch::nn::utils::clip_grad_norm_(all_params, 1.0);
+                    optimizer.step();
+                }
             }
 
             loss_accum.add_((loss * static_cast<float>(accum_steps)).detach());
@@ -375,10 +431,24 @@ bool MLModelTrainer::train(int epochs, float learning_rate) {
                     batch_idx.push_back(val_indices[static_cast<size_t>(i)]);
 
                 auto [src, trg] = prepareBatch(batch_idx);
+
+                if (use_amp_) {
+                    at::autocast::set_autocast_gpu_dtype(at::kHalf);
+                    at::autocast::set_enabled(true);
+                    at::autocast::increment_nesting();
+                }
+
                 auto outputs = model_->forward(src, trg, 1.0f);
                 auto logits = outputs.slice(0, 1).reshape({-1, outputs.size(2)});
                 auto targets = trg.slice(0, 1).reshape({-1}).to(model_->device_);
                 val_accum.add_(criterion(logits, targets).detach());
+
+                if (use_amp_) {
+                    at::autocast::decrement_nesting();
+                    at::autocast::set_enabled(false);
+                    at::autocast::clear_cache();
+                }
+
                 val_count++;
             }
             val_loss = (val_count > 0) ? (val_accum.item<float>() / static_cast<float>(val_count)) : 0.0f;

@@ -109,9 +109,10 @@ DatabaseConnector::QueryResult DatabaseConnector::executeQuery(const std::string
 std::vector<std::string> DatabaseConnector::getTableNames() {
     std::vector<std::string> tables;
     
-    std::string query = 
+    std::string query =
         "SELECT table_name FROM information_schema.tables "
-        "WHERE table_schema = 'public' ORDER BY table_name";
+        "WHERE table_schema = 'bookings' AND table_type = 'BASE TABLE' "
+        "ORDER BY table_name";
     
     auto result = executeQuery(query);
     

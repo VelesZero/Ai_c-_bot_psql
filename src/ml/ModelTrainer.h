@@ -4,6 +4,7 @@
 #include "Seq2SeqModel.h"
 #include "Vocabulary.h"
 #include <torch/torch.h>
+#include <ATen/autocast_mode.h>
 #include <string>
 #include <vector>
 #include <tuple>
@@ -39,6 +40,7 @@ public:
     void setGradAccumSteps(int steps);
     void setVocabLimits(int nl_vocab_max, int sql_vocab_max);
     void setCheckpointEvery(int epochs, const std::string& prefix);
+    void setAMP(bool enabled);
 
     bool loadDataset(const std::string& path);
     bool train(int epochs = 100, float learning_rate = 0.001);
@@ -84,6 +86,18 @@ private:
     // Checkpoint: save every N epochs (0 = disabled)
     int checkpoint_every_ = 0;
     std::string checkpoint_prefix_;
+
+    // Mixed precision (AMP)
+    bool use_amp_ = false;
+
+    struct GradScaler {
+        float scale = 65536.0f;
+        float growth_factor = 2.0f;
+        float backoff_factor = 0.5f;
+        int growth_interval = 2000;
+        int step_count = 0;
+    };
+    GradScaler grad_scaler_;
 
     void buildVocabularies();
     void preEncodeDataset();

@@ -8,6 +8,7 @@
 #include "src/config/Config.h"
 #include <memory>
 #include <string>
+#include <optional>
 
 class Agent {
 public:
@@ -52,6 +53,9 @@ private:
     
     bool initialized_;
     bool allowOfflineSQL_ = false;
+
+    // Handle queries like "show first row from every table"
+    bool tryHandleMultiTableQuery(const std::string& query, QueryResponse& response);
 };
 
 #endif // AGENT_H

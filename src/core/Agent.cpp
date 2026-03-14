@@ -1,5 +1,7 @@
 #include "src/core/Agent.h"
 #include "src/utils/Logger.h"
+#include <algorithm>
+#include <regex>
 
 Agent::Agent() 
     : outputFormat_(ResponseParser::OutputFormat::TABLE),
@@ -70,7 +72,12 @@ Agent::QueryResponse Agent::processQueryDetailed(const std::string& naturalLangu
     const bool dbReady = dbConnector_->isConnected();
     
     Logger::getInstance().info("Processing query: " + naturalLanguageQuery);
-    
+
+    // Check for multi-table queries ("every table", "all tables", etc.)
+    if (dbReady && tryHandleMultiTableQuery(naturalLanguageQuery, response)) {
+        return response;
+    }
+
     // Обработка естественного языка
     auto nlResult = nlProcessor_->processQueryDetailed(naturalLanguageQuery);
     
@@ -141,4 +148,62 @@ bool Agent::trainModel(const std::string& trainingDataPath) {
 
 void Agent::setOutputFormat(ResponseParser::OutputFormat format) {
     outputFormat_ = format;
+}
+
+bool Agent::tryHandleMultiTableQuery(const std::string& query, QueryResponse& response) {
+    // Lowercase the query for matching
+    std::string lower = query;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+    // Check for "every table" / "all tables" patterns
+    bool isMultiTable = false;
+    if (lower.find("every table") != std::string::npos ||
+        lower.find("all tables") != std::string::npos ||
+        lower.find("each table") != std::string::npos ||
+        lower.find("all my table") != std::string::npos) {
+        isMultiTable = true;
+    }
+
+    if (!isMultiTable) return false;
+
+    // Determine how many rows per table (default 1)
+    int limit = 1;
+    std::regex numPattern(R"((?:first|top)\s+(\d+))");
+    std::smatch match;
+    if (std::regex_search(lower, match, numPattern)) {
+        limit = std::stoi(match[1].str());
+        if (limit < 1) limit = 1;
+        if (limit > 50) limit = 50;
+    }
+
+    Logger::getInstance().info("Multi-table query detected, limit=" + std::to_string(limit));
+
+    // List of all tables in bookings schema
+    static const std::vector<std::string> tables = {
+        "bookings.airports_data",
+        "bookings.airplanes_data",
+        "bookings.flights",
+        "bookings.routes",
+        "bookings.bookings",
+        "bookings.tickets",
+        "bookings.segments",
+        "bookings.seats",
+        "bookings.boarding_passes",
+    };
+
+    std::string combinedResult;
+    for (const auto& table : tables) {
+        std::string sql = "SELECT * FROM " + table + " LIMIT " + std::to_string(limit);
+        auto dbResult = dbConnector_->executeQuery(sql);
+        if (dbResult.success) {
+            combinedResult += "\n=== " + table + " ===\n";
+            combinedResult += responseParser_->formatResponse(dbResult, outputFormat_);
+        }
+    }
+
+    response.success = true;
+    response.sqlQuery = "(multi-table: SELECT * FROM each table LIMIT " + std::to_string(limit) + ")";
+    response.confidence = 1.0;
+    response.result = combinedResult;
+    return true;
 }

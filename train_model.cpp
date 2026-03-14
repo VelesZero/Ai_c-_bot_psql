@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
     int patience = 5;
     float weight_decay = 1e-5f;
     float label_smoothing = 0.1f;
+    bool use_amp = false;
 
     auto is_number = [](const std::string& s) -> bool {
         if (s.empty()) return false;
@@ -140,6 +141,9 @@ int main(int argc, char** argv) {
         if (std::string(argv[i]) == "--layers" && i + 1 < argc) {
             num_layers = std::stoi(argv[++i]);
         }
+        if (std::string(argv[i]) == "--amp") {
+            use_amp = true;
+        }
     }
 
     if (device_mode == DeviceMode::CPU) {
@@ -169,6 +173,7 @@ int main(int argc, char** argv) {
     trainer.setWeightDecay(weight_decay);
     trainer.setLabelSmoothing(label_smoothing);
     trainer.setNumLayers(num_layers);
+    trainer.setAMP(use_amp);
     if (checkpoint_every > 0) {
         trainer.setCheckpointEvery(checkpoint_every, out_prefix);
     }
